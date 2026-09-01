@@ -1,0 +1,26 @@
+---
+title: "Luke Benson"
+image: https://github.com/lukegbenson.png
+about:
+  template: trestles
+  links:
+    - icon: github
+      text: GitHub
+      href: https://github.com/lukegbenson
+    - icon: linkedin
+      text: LinkedIn
+      href: https://www.linkedin.com/in/lukegbenson/
+    - icon: envelope
+      text: Email
+      href: mailto:lukegbenson@gmail.com
+---
+
+## Hello!
+
+I am a MSC Urban Spatial Science student at the Centre for Advanced Spatial Analysis (CASA), Univerity College London.
+
+## Education
+
+**MSc Urban Spatial Science** — University College London (UCL), 2026
+
+**BS Statistics & Data Science** — Yale University, 2021

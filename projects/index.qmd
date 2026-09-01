@@ -1,0 +1,10 @@
+---
+title: "Project Repository"
+listing:
+  contents: .
+  type: default
+  sort: "date desc"
+  sort-ui: [date, title]
+  categories: true
+  fields: [image, title, subtitle, reading-time, description, date]
+---
