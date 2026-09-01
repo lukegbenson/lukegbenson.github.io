@@ -10,5 +10,8 @@
   },
   "about.qmd": {
     "about.html": "24b512d2"
+  },
+  "projects/nba_gnn/index.qmd": {
+    "index.html": "946b4be7"
   }
 }
