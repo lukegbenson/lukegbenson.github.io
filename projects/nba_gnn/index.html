@@ -6,10 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2026-08-20">
-<meta name="description" content="Deriving a behavioral metric for capturing the extent to which neighbors share destinations.">
+<meta name="dcterms.date" content="2026-05-02">
+<meta name="description" content="Building an inductive graph neural network (GNN) to estimate fandom numbers for new teams in Seattle and Las Vegas.">
 
-<title>Measuring and Modeling Neighborhood Destination Heterogeneity – Luke Benson</title>
+<title>Fandom Estimation Under NBA Expansion – Luke Benson</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -306,7 +306,29 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#abstract" id="toc-abstract" class="nav-link active" data-scroll-target="#abstract">Abstract</a></li>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#research-questions" id="toc-research-questions" class="nav-link" data-scroll-target="#research-questions">Research Questions</a></li>
+  <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data">Data</a>
+  <ul class="collapse">
+  <li><a href="#dataset-1-us-counties" id="toc-dataset-1-us-counties" class="nav-link" data-scroll-target="#dataset-1-us-counties">Dataset 1: US Counties</a></li>
+  <li><a href="#dataset-2-us-county-team-affinities" id="toc-dataset-2-us-county-team-affinities" class="nav-link" data-scroll-target="#dataset-2-us-county-team-affinities">Dataset 2: US County Team Affinities</a></li>
+  <li><a href="#dataset-3-nba-teams" id="toc-dataset-3-nba-teams" class="nav-link" data-scroll-target="#dataset-3-nba-teams">Dataset 3: NBA Teams</a></li>
+  </ul></li>
+  <li><a href="#methodology" id="toc-methodology" class="nav-link" data-scroll-target="#methodology">Methodology</a>
+  <ul class="collapse">
+  <li><a href="#conceptual-design" id="toc-conceptual-design" class="nav-link" data-scroll-target="#conceptual-design">Conceptual Design</a></li>
+  <li><a href="#model-architecture" id="toc-model-architecture" class="nav-link" data-scroll-target="#model-architecture">Model Architecture</a></li>
+  <li><a href="#loss-function" id="toc-loss-function" class="nav-link" data-scroll-target="#loss-function">Loss Function</a></li>
+  <li><a href="#training-framework" id="toc-training-framework" class="nav-link" data-scroll-target="#training-framework">Training Framework</a></li>
+  <li><a href="#inference" id="toc-inference" class="nav-link" data-scroll-target="#inference">Inference</a></li>
+  </ul></li>
+  <li><a href="#results-and-discussion" id="toc-results-and-discussion" class="nav-link" data-scroll-target="#results-and-discussion">Results and Discussion</a>
+  <ul class="collapse">
+  <li><a href="#current-teams" id="toc-current-teams" class="nav-link" data-scroll-target="#current-teams">Current teams</a></li>
+  <li><a href="#expansion" id="toc-expansion" class="nav-link" data-scroll-target="#expansion">Expansion</a></li>
+  </ul></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul>
 </nav>
     </div>
@@ -316,12 +338,12 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Measuring and Modeling Neighborhood Destination Heterogeneity</h1>
+<h1 class="title">Fandom Estimation Under NBA Expansion</h1>
 </div>
 
 <div>
   <div class="description">
-    Deriving a behavioral metric for capturing the extent to which neighbors share destinations.
+    Building an inductive graph neural network (GNN) to estimate fandom numbers for new teams in Seattle and Las Vegas.
   </div>
 </div>
 
@@ -332,7 +354,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">August 20, 2026</p>
+      <p class="date">May 2, 2026</p>
     </div>
   </div>
   
@@ -344,11 +366,271 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p><a href="https://github.com/lukegbenson/destination_heterogeneity" class="btn btn-outline-primary btn-sm"><i class="fa-brands fa-github" aria-label="github"></i> View code on GitHub</a></p>
-<section id="abstract" class="level1">
-<h1>Abstract</h1>
-<p>Shared residence creates the potential for shared experience, but neighbors may still exhibit divergent mobility patterns. My work introduces neighborhood destination heterogeneity, a neighborhood-level behavioral measure which captures the degree to which residents of the same neighborhood differ in the destinations they visit. To allow for comparisons across neighborhoods with varying quantities of mobility data, I propose a sampling algorithm for estimating this metric from the GPS-derived visits of more than one million London residents. I show that this algorithm is robust to parameter selection. The resulting scores across Middle-layer Super Output Areas (MSOAs) reveal a central-peripheral gradient in which residents of central London neighborhoods generally visit more similar sets of destinations than their peripheral peers, though the City of London and parts of Westminster deviate from this pattern. Subsequent explanatory modeling investigates the influence of residential composition, structural opportunity, and behavioral affinities, with each variable group contributing significant predictors. Modeling results indicate that destination heterogeneity should not be exclusively interpreted as a measure of either behavioral freedom or environmental constraint: public transport access is associated with greater divergence among residents, while local amenity diversity is associated with greater convergence. I, therefore, propose destination heterogeneity as an indicator of realized collective behavior which reveals differences between neighborhoods that appear similar under existing opportunity and accessibility measures.</p>
-<p><em>Complete work to be provided upon department review of submission…</em></p>
+<p><a href="https://github.com/lukegbenson/nba_fandom_gnn" class="btn btn-outline-primary btn-sm"><i class="fa-brands fa-github" aria-label="github"></i> View code on GitHub</a></p>
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+<p>The National Basketball Association (NBA) is considering expansion. The league has included 30 teams since 2004, but at the start of the decade, league commissioner Adam Silver hinted that more teams could be added at a future date (Bontemps, 2020). Earlier this year, Silver finally announced that he would begin a more formal expansion process: the league would officially explore the feasibility of adding two teams in Seattle and Las Vegas (NBA Official Release, 2026).</p>
+<p>There are many factors to consider for league expansion, including the impact of distributing talent across more teams, the competitiveness of play, and, crucially, where to place new franchises. Past research has assessed the most optimal cities for expansion through a variety of lenses, including estimated team travel costs (Hassanzadeh, Davari, and Goossens, 2025) and predicted attendance and revenue (Rascher and Rascher, 2004). However, central to the consideration of any expansion city is the city’s potential to attract fans: without fans, a new team is doomed to a short lifespan.</p>
+</section>
+<section id="research-questions" class="level1">
+<h1>Research Questions</h1>
+<p>Given the current geographic distribution of NBA fans across the US, which counties could new NBA teams in Seattle and Las Vegas expect to attract fans from over time? What share of the population could they potentially capture?</p>
+</section>
+<section id="data" class="level1">
+<h1>Data</h1>
+<p>This project requires extensive data preprocessing. Dataset 1 contains US county geometries and statistics from ACS 2024 5-year estimates. Dataset 2 contains US county team affinities, measured as the estimated percentage of residents who support each team. These estimates are based on the popularity of each team name over the past 5 years in Google Trends data. Finally, Dataset 3 contains team success and valuation statistics along with stadium locations.</p>
+<section id="dataset-1-us-counties" class="level2">
+<h2 class="anchored" data-anchor-id="dataset-1-us-counties">Dataset 1: US Counties</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 29%">
+<col style="width: 11%">
+<col style="width: 58%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>geoid</td>
+<td>Numeric</td>
+<td>The unique identifier for the county.</td>
+</tr>
+<tr class="even">
+<td>county_name</td>
+<td>Categorical</td>
+<td>The name of the county.</td>
+</tr>
+<tr class="odd">
+<td>state_name</td>
+<td>Categorical</td>
+<td>The name of the US state.</td>
+</tr>
+<tr class="even">
+<td>density</td>
+<td>Numeric</td>
+<td>The opulation density (population / land area) of the county.</td>
+</tr>
+<tr class="odd">
+<td>median_income</td>
+<td>Numeric</td>
+<td>The median income (in dollars) of the county.</td>
+</tr>
+<tr class="even">
+<td>median_age</td>
+<td>Numeric</td>
+<td>The median age of residents of the county.</td>
+</tr>
+<tr class="odd">
+<td>pct_high_income</td>
+<td>Numeric</td>
+<td>The % of households making more than $200K.</td>
+</tr>
+<tr class="even">
+<td>pct_bachelors</td>
+<td>Numeric</td>
+<td>The % of residents age 25+ with a bachelor’s degree.</td>
+</tr>
+<tr class="odd">
+<td>pct_white</td>
+<td>Numeric</td>
+<td>The % of residents who are white (non-Hispanic).</td>
+</tr>
+<tr class="even">
+<td>geometry</td>
+<td>String</td>
+<td>The county geometry in EPSG:4269.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="dataset-2-us-county-team-affinities" class="level2">
+<h2 class="anchored" data-anchor-id="dataset-2-us-county-team-affinities">Dataset 2: US County Team Affinities</h2>
+<div id="tbl-variables" class="quarto-float quarto-figure quarto-figure-center anchored" data-tbl-colwidths="[18, 10, 32, 40]">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl quarto-uncaptioned" id="tbl-variables-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1
+</figcaption>
+<div aria-describedby="tbl-variables-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 18%">
+<col style="width: 10%">
+<col style="width: 32%">
+<col style="width: 40%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Variable</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Description</th>
+<th style="text-align: left;">Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">geoid</td>
+<td style="text-align: left;">Numeric</td>
+<td style="text-align: left;">The unique identifier for the county.</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">dma</td>
+<td style="text-align: left;">Categorical</td>
+<td style="text-align: left;">The US Designated Market Area (DMA) of the county.</td>
+<td style="text-align: left;">DMAs are used to measure television and radio viewings. Each DMA contains several counties, and each county belongs to exactly one DMA.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">boston_celtics</td>
+<td style="text-align: left;">Numeric</td>
+<td style="text-align: left;">The estimated % of residents who support the Boston Celtics.</td>
+<td style="text-align: left;">Provided at a DMA level.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">…</td>
+<td style="text-align: left;">Numeric</td>
+<td style="text-align: left;">The estimated % of residents who support TEAM X</td>
+<td style="text-align: left;">28 other columns, 30 teams in total. Provided at a DMA level.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">washington_wizards</td>
+<td style="text-align: left;">Numeric</td>
+<td style="text-align: left;">The estimated % of residents who support the Washington Wizards.</td>
+<td style="text-align: left;">Provided at a DMA level.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+</section>
+<section id="dataset-3-nba-teams" class="level2">
+<h2 class="anchored" data-anchor-id="dataset-3-nba-teams">Dataset 3: NBA Teams</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 29%">
+<col style="width: 11%">
+<col style="width: 58%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>team</td>
+<td>String</td>
+<td>The unique team name.</td>
+</tr>
+<tr class="even">
+<td>value</td>
+<td>Numeric</td>
+<td>Forbes estimated team values (in dollars).</td>
+</tr>
+<tr class="odd">
+<td>win_pct</td>
+<td>Numeric</td>
+<td>Team winning % over the past 5 seasons.</td>
+</tr>
+<tr class="even">
+<td>championships</td>
+<td>Numeric</td>
+<td>The number of championships in the team’s history.</td>
+</tr>
+<tr class="odd">
+<td>geometry</td>
+<td>Categorical</td>
+<td>The county geometry in EPSG:4269.</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="methodology" class="level1">
+<h1>Methodology</h1>
+<section id="conceptual-design" class="level2">
+<h2 class="anchored" data-anchor-id="conceptual-design">Conceptual Design</h2>
+<p>Conceptually, we frame NBA team affinities in any US county as the product of three principal factors: 1) geographic proximity to teams, 2) team success and legacy, and 3) the demographics and economics of the county and surrounding counties. Learning how these features predict team affinities then allows us to model how affinities may change upon the introduction of two expansion teams in Seattle and Las Vegas. The technical design which most appropriately captures this framework is an inductive heterogeneous graph neural network (GNN).</p>
+</section>
+<section id="model-architecture" class="level2">
+<h2 class="anchored" data-anchor-id="model-architecture">Model Architecture</h2>
+<p>Given that we are interested in analyzing the shift in fandom upon adding two teams, our GNN should learn a general function which inputs the features of US counties and NBA teams and then outputs team affinities. By learning a function rather than representations of specific counties and teams, the model can generalize to unseen counties or teams; this is the kind of inductive GNN framework which was introduced in GraphSAGE (Hamilton, Ying, and Leskovec, 2017).</p>
+<p>The graph is heterogeneous in that there are two distinct types of nodes: a county and a team. Each county contains a specific set of demographic and economic features, and each team has valuation and success features. We construct two distinct sets of edges. First, county-county edges are added and symmetrically-normalized between geographically adjacent counties. Separately, county-team edges are assigned so that each county is connected to the K nearest teams; the K edge values for each county are based on a distance decay function.</p>
+<p>The GNN can broadly be broken down into three components: 1) encoding, 2) message passing, and 3) decoding. The encoding layer consists of simple MLPs which build initial embeddings for each team and county based solely on the node features. The message passing layer then updates county embeddings based on its proximal counties and closest K NBA teams. These first two components both use 30% dropout to reduce overfitting with a (relatively) small dataset. Finally, the decoding layer calculates the inner product between county embeddings and team embeddings to obtain a similarity score. This score is then weighted alongside a fixed distance decay score. Applying a Softmax function to the weighted scores over each county results in estimated county-level team fandom percentages.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="nba_gnn_architecture.png" class="img-fluid figure-img"></p>
+<figcaption>Inductive graph neural network (GNN) model architecture for learning team affinities based on team features, county features, and the spatial relationships between counties and teams.</figcaption>
+</figure>
+</div>
+<p>Conceptually, we want to represent counties and teams in some shared latent space. County representations are informed both by geographic neighbors and by proximal NBA teams, while team representations depend only on team features: the resulting inner product between county and team embeddings captures latent similarity. County-team similarity is averaged with fixed county-team proximity — essentially framing fandom as something that is explained partially by pure geography, but also by the interactions between county and team identities.</p>
+</section>
+<section id="loss-function" class="level2">
+<h2 class="anchored" data-anchor-id="loss-function">Loss Function</h2>
+<p>The construction of the loss function has a few technical details worth mentioning. We start with KL-Divergence, which is a standard metric for computing how a given distribution (predicted team affinities) diverges from a reference distribution (true team affinities). Given that team affinities were acquired at the DMA level, we calculate the loss by averaging county predictions at the DMA level: county-level variation within a DMA doesn’t exist in the observed data, but we don’t want to penalize the model for predicting such variation. We also add a Laplacian regularizer to the loss which penalizes counties for having affinities vastly different from their neighbors; it serves as a smoothing function during training.</p>
+</section>
+<section id="training-framework" class="level2">
+<h2 class="anchored" data-anchor-id="training-framework">Training Framework</h2>
+<p>The goal of the model is to generalize well to estimating county affinities upon the addition of two new NBA teams. We, therefore, devise a training framework which goes beyond a standard train-validation split and, instead, more closely mirrors the NBA expansion process. To reflect the fact that new NBA teams will have to compete for fans amongst established high-fandom teams, we take the 15 teams with the most fans and include them in every training set. We split up the remaining 15 teams into 5 folds of 3 teams so that each fold contains roughly the same number of total fans. We then perform 5-fold cross validation in which, for each set of model parameters, we hold out each fold of 3 teams and train the model on the other 27 teams. For inference on our two expansion teams, we then select the model parameters which, on average, generalize the best to the unseen teams during cross-validation training.</p>
+</section>
+<section id="inference" class="level2">
+<h2 class="anchored" data-anchor-id="inference">Inference</h2>
+<p>We add two new teams in Seattle and Las Vegas and model county affinities under this expansion. For node features, we assign league-average values for recent team success and valuation, and, appropriately, give each team 0 championships.</p>
+</section>
+</section>
+<section id="results-and-discussion" class="level1">
+<h1>Results and Discussion</h1>
+<section id="current-teams" class="level2">
+<h2 class="anchored" data-anchor-id="current-teams">Current teams</h2>
+<p>The best cross-validated model achieves an evaluation loss just above 0.19 on the full 30-team data. For context, this represents a more than 70% loss reduction from the most basic model of predicting uniform team affinities for each county, showing that our model is picking up meaningful affinity differentiation. Both the proximity signal and embedding signal are critical for predictions. The loss doubles without the embedding signal and increases even more without the proximity signal: geographic proximity, as expected, primarily drives fandom, but county-team features and interactions explain affinities in a way that proximity alone cannot capture.</p>
+<p>Permutation importance reveals that team attributes are much more crucial to accurate affinity predictions than county attributes. The number of championships is the most important feature, and, conceptually, this makes sense: where geographic proximity to teams is weak, a team’s legacy will attract fans. Interestingly, county population density is the least important feature. It was hypothesized that large metro areas may have affinity tendencies distinct from those of less dense areas, but perhaps the combination of geographic proximity and other county features already serves as a kind of proxy for a county’s level of urbanization.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="importance_and_ablation.png" class="img-fluid figure-img"></p>
+<figcaption>Geographic proximity alone is still more important than the complex relationships between county and team attributes. Understandably, team attributes are also more important than the features of the county itself, with past team success best helping explain fan affinities.</figcaption>
+</figure>
+</div>
+<p>Viewing observed vs.&nbsp;predicted national population-weighted team affinity percentages, it is clear that the model generally underpredicts high-affinity teams and overpredicts low-affinity teams: there is some oversmoothing which could be refined in future models. Notably, the Philadelphia 76ers are one of the lower-affinity teams, but are predicted as the third-highest affinity franchise. Visually, these numbers appear to be driven by overpredicted fandom in the Philadelphia metro area, but the county affinities for this specific team warrant future investigation.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="fandom_observed_vs_predicted.png" class="img-fluid figure-img"></p>
+<figcaption>Observed vs.&nbsp;estimated team fandom percentages. Overall, the model generally underpredicts high-affinity teams and overpredicts low-affinity teams, smoothing fan estimates toward the average. Estimates for the Philadelphia 76ers are notably off.</figcaption>
+</figure>
+</div>
+</section>
+<section id="expansion" class="level2">
+<h2 class="anchored" data-anchor-id="expansion">Expansion</h2>
+<p>With average team success and valuation, new teams in Seattle and Las Vegas can each expect to pick up around 2.5% of fans in the US, roughly middle-of-the-pack numbers amongst all NBA teams. Visually, these fans, expectedly, are concentrated in counties surrounding each city: Seattle fandom radiates outward from King county, appropriately cut off into Oregon by Portland Trailblazers fandom, and Las Vegas fandom eats up chunks of the broader Southwest.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="fandom_expansion_predicted.png" class="img-fluid figure-img"></p>
+<figcaption>Esimated fandom percentages under league expansion in Seattle and Las Vegas. Using this model, the two new teams could expect roughly middle-of-the-pack fandom percentages.</figcaption>
+</figure>
+</div>
+<p>Of course, there is a cold start problem which is difficult to replicate in this modeling. We don’t have the fandom data for a new NBA team in year 1; while we are capturing a sense of team affinity changes upon adding new teams, these estimates are time-agnostic. In reality, fan allegiance takes time to build (Funk and James, 2001). Therefore, the estimated fan percentages for these expansion teams are probably more realistic a few years down the line.</p>
+</section>
+</section>
+<section id="conclusion" class="level1">
+<h1>Conclusion</h1>
+<p>The GNN architecture presented here effectively models NBA fandom across the US. This model can be used to estimate national and county-level fan share for expansion teams in Seattle and Las Vegas and reveal that, under average team success and valuation, both teams can expect to attract a high percentage of regional fans and roughly 2.5% of fans nationally.</p>
+<p>This model has important limitations. First, it assumes that the percentage of NBA fans is the same across all US counties. In reality, some areas have greater sports culture than others, and the addition of a new sports franchise would certainly create new fans. Additionally, true fandom was estimated using open-source Google Trends data; additional work could consider more advanced methods to estimate real team affinities.</p>
+<p>Finally, this work considers only the proposed sites of Seattle and Las Vegas. In theory, this model can be used to estimate fandom change under league expansion with any locations in the US. Running the model for multiple sets of other potential locations may reveal more optimal cities for the league to consider.</p>
+</section>
+<section id="references" class="level1">
+<h1>References</h1>
+<p>Bontemps, T. (2020). Adam Silver acknowledges possibility of NBA expansion. [online] ESPN.com. Available at: <a href="https://www.espn.co.uk/nba/story/_/id/30576045/adam-silver-acknowledges-possibility-nba-expansion">https://www.espn.co.uk/nba/story/_/id/30576045/adam-silver-acknowledges-possibility-nba-expansion</a>.</p>
+<p>Funk, D.C. and James, J. (2001). The Psychological Continuum Model: A Conceptual Framework for Understanding an Individual’s Psychological Connection to Sport. Sport Management Review, 4(2), pp.119-150. doi:<a href="https://doi.org/10.1016/S1441-3523(01)70072-1">https://doi.org/10.1016/S1441-3523(01)70072-1</a>.</p>
+<p>Hamilton, W. L., Ying, R. and Leskovec, J. (2017) Inductive representation learning on large graphs. In: Advances in Neural Information Processing Systems 30 (NeurIPS 2017), pp.&nbsp;1024-1034. Available at: <a href="https://arxiv.org/abs/1706.02216">https://arxiv.org/abs/1706.02216</a>.</p>
+<p>Hassanzadeh, A., Davari, M. and Goossens, D. (2025). Fairness, Travel, and Market Potential: An Optimization Framework for NBA Expansion. arXiv preprint arXiv:2512.16968. Available at: <a href="https://arxiv.org/abs/2512.16968">https://arxiv.org/abs/2512.16968</a>.</p>
+<p>NBA Official Release (2026). NBA Board of Governors approves exploration of expansion to Seattle, Las Vegas. [online] NBA. Available at: <a href="https://www.nba.com/news/nba-board-of-governors-exploration-seattle-las-vegas-expansion">https://www.nba.com/news/nba-board-of-governors-exploration-seattle-las-vegas-expansion</a>.</p>
+<p>Rascher, D. and Rascher, H. (2004). NBA Expansion and Relocation: A Viability Study of Various Cities. Journal of Sport Management, 18(3), pp.274-295. doi:<a href="https://doi.org/10.1123/jsm.18.3.274">https://doi.org/10.1123/jsm.18.3.274</a>.</p>
 
 
 </section>
