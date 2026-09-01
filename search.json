@@ -1,0 +1,44 @@
+[
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this site"
+  },
+  {
+    "objectID": "projects/dissertation/index.html",
+    "href": "projects/dissertation/index.html",
+    "title": "Measuring and Modeling Neighborhood Destination Heterogeneity",
+    "section": "",
+    "text": "Abstract\nShared residence creates the potential for shared experience, but neighbors may still exhibit divergent mobility patterns. My work introduces neighborhood destination heterogeneity, a neighborhood-level behavioral measure which captures the degree to which residents of the same neighborhood differ in the destinations they visit. To allow for comparisons across neighborhoods with varying quantities of mobility data, I propose a sampling algorithm for estimating this metric from the GPS-derived visits of more than one million London residents. I show that this algorithm is robust to parameter selection. The resulting scores across Middle-layer Super Output Areas (MSOAs) reveal a central-peripheral gradient in which residents of central London neighborhoods generally visit more similar sets of destinations than their peripheral peers, though the City of London and parts of Westminster deviate from this pattern. Subsequent explanatory modeling investigates the influence of residential composition, structural opportunity, and behavioral affinities, with each variable group contributing significant predictors. Modeling results indicate that destination heterogeneity should not be exclusively interpreted as a measure of either behavioral freedom or environmental constraint: public transport access is associated with greater divergence among residents, while local amenity diversity is associated with greater convergence. I, therefore, propose destination heterogeneity as an indicator of realized collective behavior which reveals differences between neighborhoods that appear similar under existing opportunity and accessibility measures.\nComplete work to be provided upon department review of submission…"
+  },
+  {
+    "objectID": "projects/index.html",
+    "href": "projects/index.html",
+    "title": "Project Repository",
+    "section": "",
+    "text": "Order By\n      Default\n      \n        Date - Oldest\n      \n      \n        Date - Newest\n      \n      \n        Title\n      \n    \n  \n\n\n\n\n\n\n\n\n\n\nMeasuring and Modeling Neighborhood Destination Heterogeneity\n\n\n\n\n\nDissertation\n\n\n\n\n\nAug 20, 2026\n\n2 min\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Luke Benson",
+    "section": "",
+    "text": "I am a MSC Urban Spatial Science student at the Centre for Advanced Spatial Analysis (CASA), Univerity College London."
+  },
+  {
+    "objectID": "index.html#hello",
+    "href": "index.html#hello",
+    "title": "Luke Benson",
+    "section": "",
+    "text": "I am a MSC Urban Spatial Science student at the Centre for Advanced Spatial Analysis (CASA), Univerity College London."
+  },
+  {
+    "objectID": "index.html#education",
+    "href": "index.html#education",
+    "title": "Luke Benson",
+    "section": "Education",
+    "text": "Education\nMSc Urban Spatial Science — University College London (UCL), 2026\nBS Statistics & Data Science — Yale University, 2021"
+  }
+]
