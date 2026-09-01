@@ -1,6 +1,7 @@
 ---
 title: "Luke Benson"
 image: https://github.com/lukegbenson.png
+favicon: favicon.png
 about:
   template: trestles
   links:
