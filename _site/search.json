@@ -7,41 +7,6 @@
     "text": "About this site"
   },
   {
-    "objectID": "projects/dissertation/index.html",
-    "href": "projects/dissertation/index.html",
-    "title": "Measuring and Modeling Neighborhood Destination Heterogeneity",
-    "section": "",
-    "text": "View code on GitHub\n\nAbstract\nShared residence creates the potential for shared experience, but neighbors may still exhibit divergent mobility patterns. My work introduces neighborhood destination heterogeneity, a neighborhood-level behavioral measure which captures the degree to which residents of the same neighborhood differ in the destinations they visit. To allow for comparisons across neighborhoods with varying quantities of mobility data, I propose a sampling algorithm for estimating this metric from the GPS-derived visits of more than one million London residents. I show that this algorithm is robust to parameter selection. The resulting scores across Middle-layer Super Output Areas (MSOAs) reveal a central-peripheral gradient in which residents of central London neighborhoods generally visit more similar sets of destinations than their peripheral peers, though the City of London and parts of Westminster deviate from this pattern. Subsequent explanatory modeling investigates the influence of residential composition, structural opportunity, and behavioral affinities, with each variable group contributing significant predictors. Modeling results indicate that destination heterogeneity should not be exclusively interpreted as a measure of either behavioral freedom or environmental constraint: public transport access is associated with greater divergence among residents, while local amenity diversity is associated with greater convergence. I, therefore, propose destination heterogeneity as an indicator of realized collective behavior which reveals differences between neighborhoods that appear similar under existing opportunity and accessibility measures.\nComplete work to be provided upon department review of submission…"
-  },
-  {
-    "objectID": "projects/index.html",
-    "href": "projects/index.html",
-    "title": "Project Repository",
-    "section": "",
-    "text": "Order By\n      Default\n      \n        Date - Oldest\n      \n      \n        Date - Newest\n      \n      \n        Title\n      \n    \n  \n\n\n\n\n\n\n\n\n\n\nMeasuring and Modeling Neighborhood Destination Heterogeneity\n\n\n\n\n\nDeriving a behavioral metric for capturing the extent to which neighbors share destinations.\n\n\n\n\n\nAug 20, 2026\n\n2 min\n\n\n\n\n\n\n\n\n\n\n\nFandom Estimation Under NBA Expansion\n\n\n\n\n\nBuilding an inductive graph neural network (GNN) to estimate fandom numbers for new teams in Seattle and Las Vegas.\n\n\n\n\n\nMay 2, 2026\n\n13 min\n\n\n\n\nNo matching items"
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Luke Benson",
-    "section": "",
-    "text": "I am an MSc Urban Spatial Science student at the Centre for Advanced Spatial Analysis (CASA), University College London.\nI’m a fan of cities, walkability, and sesame bagels, and I’m interested in using data to understand the relationships between people and their spatial environments.\nCheck out my projects to see what I’ve been up to!"
-  },
-  {
-    "objectID": "index.html#hello",
-    "href": "index.html#hello",
-    "title": "Luke Benson",
-    "section": "",
-    "text": "I am an MSc Urban Spatial Science student at the Centre for Advanced Spatial Analysis (CASA), University College London.\nI’m a fan of cities, walkability, and sesame bagels, and I’m interested in using data to understand the relationships between people and their spatial environments.\nCheck out my projects to see what I’ve been up to!"
-  },
-  {
-    "objectID": "index.html#education",
-    "href": "index.html#education",
-    "title": "Luke Benson",
-    "section": "Education",
-    "text": "Education\nMSc Urban Spatial Science — University College London (UCL), 2026\nBS Statistics & Data Science — Yale University, 2021"
-  },
-  {
     "objectID": "projects/nba_gnn/index.html",
     "href": "projects/nba_gnn/index.html",
     "title": "Fandom Estimation Under NBA Expansion",
@@ -53,21 +18,14 @@
     "href": "projects/nba_gnn/index.html#dataset-1-us-counties",
     "title": "Fandom Estimation Under NBA Expansion",
     "section": "Dataset 1: US Counties",
-    "text": "Dataset 1: US Counties\n\n\n\n\n\n\n\n\nVariable\nType\nDescription\n\n\n\n\ngeoid\nNumeric\nThe unique identifier for the county.\n\n\ncounty_name\nCategorical\nThe name of the county.\n\n\nstate_name\nCategorical\nThe name of the US state.\n\n\ndensity\nNumeric\nThe opulation density (population / land area) of the county.\n\n\nmedian_income\nNumeric\nThe median income (in dollars) of the county.\n\n\nmedian_age\nNumeric\nThe median age of residents of the county.\n\n\npct_high_income\nNumeric\nThe % of households making more than $200K.\n\n\npct_bachelors\nNumeric\nThe % of residents age 25+ with a bachelor’s degree.\n\n\npct_white\nNumeric\nThe % of residents who are white (non-Hispanic).\n\n\ngeometry\nString\nThe county geometry in EPSG:4269."
-  },
-  {
-    "objectID": "projects/nba_gnn/index.html#data",
-    "href": "projects/nba_gnn/index.html#data",
-    "title": "Fandom Estimates for NBA Expansion",
-    "section": "Data",
-    "text": "Data\nThis project requires extensive data preprocessing. Dataset 1 contains US county geometries and statistics from ACS 2024 5-year estimates. Dataset 2 contains US county team affinities, measured as the estimated percentage of residents who support each team. These estimates are based on the popularity of each team name over the past 5 years in Google Trends data. Finally, Dataset 3 contains team success and valuation statistics along with stadium locations."
+    "text": "Dataset 1: US Counties\n\n\n\n\n\n\n\n\nVariable\nType\nDescription\n\n\n\n\ngeoid\nNumeric\nThe unique identifier for the county.\n\n\ncounty_name\nCategorical\nThe name of the county.\n\n\nstate_name\nCategorical\nThe name of the US state.\n\n\ndensity\nNumeric\nThe population density (population / land area) of the county.\n\n\nmedian_income\nNumeric\nThe median income (in dollars) of the county.\n\n\nmedian_age\nNumeric\nThe median age of residents of the county.\n\n\npct_high_income\nNumeric\nThe % of households making more than $200K.\n\n\npct_bachelors\nNumeric\nThe % of residents age 25+ with a bachelor’s degree.\n\n\npct_white\nNumeric\nThe % of residents who are white (non-Hispanic).\n\n\ngeometry\nString\nThe county geometry in EPSG:4269."
   },
   {
     "objectID": "projects/nba_gnn/index.html#dataset-2-us-county-team-affinities",
     "href": "projects/nba_gnn/index.html#dataset-2-us-county-team-affinities",
     "title": "Fandom Estimation Under NBA Expansion",
     "section": "Dataset 2: US County Team Affinities",
-    "text": "Dataset 2: US County Team Affinities\n\n\n\nTable 1\n\n\n\n\n\n\n\n\n\n\n\nVariable\nType\nDescription\nNotes\n\n\n\n\ngeoid\nNumeric\nThe unique identifier for the county.\n\n\n\ndma\nCategorical\nThe US Designated Market Area (DMA) of the county.\nDMAs are used to measure television and radio viewings. Each DMA contains several counties, and each county belongs to exactly one DMA.\n\n\nboston_celtics\nNumeric\nThe estimated % of residents who support the Boston Celtics.\nProvided at a DMA level.\n\n\n…\nNumeric\nThe estimated % of residents who support TEAM X\n28 other columns, 30 teams in total. Provided at a DMA level.\n\n\nwashington_wizards\nNumeric\nThe estimated % of residents who support the Washington Wizards.\nProvided at a DMA level."
+    "text": "Dataset 2: US County Team Affinities\n\n\n\n\n\n\n\n\n\nVariable\nType\nDescription\nNotes\n\n\n\n\ngeoid\nNumeric\nThe unique identifier for the county.\n\n\n\ndma\nCategorical\nThe US Designated Market Area (DMA) of the county.\nDMAs are used to measure television and radio viewings. Each DMA contains several counties, and each county belongs to exactly one DMA.\n\n\nboston_celtics\nNumeric\nThe estimated % of residents who support the Boston Celtics.\nProvided at a DMA level.\n\n\n…\nNumeric\nThe estimated % of residents who support TEAM X\n28 other columns, 30 teams in total. Provided at a DMA level.\n\n\nwashington_wizards\nNumeric\nThe estimated % of residents who support the Washington Wizards.\nProvided at a DMA level."
   },
   {
     "objectID": "projects/nba_gnn/index.html#dataset-3-nba-teams",
@@ -124,5 +82,40 @@
     "title": "Fandom Estimation Under NBA Expansion",
     "section": "Expansion",
     "text": "Expansion\nWith average team success and valuation, new teams in Seattle and Las Vegas can each expect to pick up around 2.5% of fans in the US, roughly middle-of-the-pack numbers amongst all NBA teams. Visually, these fans, expectedly, are concentrated in counties surrounding each city: Seattle fandom radiates outward from King county, appropriately cut off into Oregon by Portland Trailblazers fandom, and Las Vegas fandom eats up chunks of the broader Southwest.\n\n\n\nEsimated fandom percentages under league expansion in Seattle and Las Vegas. Using this model, the two new teams could expect roughly middle-of-the-pack fandom percentages.\n\n\nOf course, there is a cold start problem which is difficult to replicate in this modeling. We don’t have the fandom data for a new NBA team in year 1; while we are capturing a sense of team affinity changes upon adding new teams, these estimates are time-agnostic. In reality, fan allegiance takes time to build (Funk and James, 2001). Therefore, the estimated fan percentages for these expansion teams are probably more realistic a few years down the line."
+  },
+  {
+    "objectID": "projects/index.html",
+    "href": "projects/index.html",
+    "title": "Project Repository",
+    "section": "",
+    "text": "Order By\n      Default\n      \n        Date - Oldest\n      \n      \n        Date - Newest\n      \n      \n        Title\n      \n    \n  \n\n\n\n\n\n\n\n\n\n\nMeasuring and Modeling Neighborhood Destination Heterogeneity\n\n\n\n\n\nDeriving a behavioral metric for capturing the extent to which neighbors share destinations.\n\n\n\n\n\nAug 20, 2026\n\n\n\n\n\n\n\n\n\n\n\n\nFandom Estimation Under NBA Expansion\n\n\n\n\n\nBuilding an inductive graph neural network (GNN) to estimate fandom numbers for new teams in Seattle and Las Vegas.\n\n\n\n\n\nMay 2, 2026\n\n\n\n\n\n\n\n\n\n\n\n\nLas Vegas Valley Turf Tracker\n\n\n\n\n\nTracking green space loss and the related environmental impacts since the passage of Nevada AB356.\n\n\n\n\n\nApr 26, 2026\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "projects/dissertation/index.html",
+    "href": "projects/dissertation/index.html",
+    "title": "Measuring and Modeling Neighborhood Destination Heterogeneity",
+    "section": "",
+    "text": "View code on GitHub\n\nAbstract\nShared residence creates the potential for shared experience, but neighbors may still exhibit divergent mobility patterns. My work introduces neighborhood destination heterogeneity, a neighborhood-level behavioral measure which captures the degree to which residents of the same neighborhood differ in the destinations they visit. To allow for comparisons across neighborhoods with varying quantities of mobility data, I propose a sampling algorithm for estimating this metric from the GPS-derived visits of more than one million London residents. I show that this algorithm is robust to parameter selection. The resulting scores across Middle-layer Super Output Areas (MSOAs) reveal a central-peripheral gradient in which residents of central London neighborhoods generally visit more similar sets of destinations than their peripheral peers, though the City of London and parts of Westminster deviate from this pattern. Subsequent explanatory modeling investigates the influence of residential composition, structural opportunity, and behavioral affinities, with each variable group contributing significant predictors. Modeling results indicate that destination heterogeneity should not be exclusively interpreted as a measure of either behavioral freedom or environmental constraint: public transport access is associated with greater divergence among residents, while local amenity diversity is associated with greater convergence. I, therefore, propose destination heterogeneity as an indicator of realized collective behavior which reveals differences between neighborhoods that appear similar under existing opportunity and accessibility measures.\nComplete work to be provided upon department review of submission…"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Luke Benson",
+    "section": "",
+    "text": "I am an MSc Urban Spatial Science student at the Centre for Advanced Spatial Analysis (CASA), University College London.\nI’m a fan of cities, walkability, and sesame bagels, and I’m interested in using data to understand the relationships between people and their spatial environments.\nCheck out my projects to see what I’ve been up to!"
+  },
+  {
+    "objectID": "index.html#hello",
+    "href": "index.html#hello",
+    "title": "Luke Benson",
+    "section": "",
+    "text": "I am an MSc Urban Spatial Science student at the Centre for Advanced Spatial Analysis (CASA), University College London.\nI’m a fan of cities, walkability, and sesame bagels, and I’m interested in using data to understand the relationships between people and their spatial environments.\nCheck out my projects to see what I’ve been up to!"
+  },
+  {
+    "objectID": "index.html#education",
+    "href": "index.html#education",
+    "title": "Luke Benson",
+    "section": "Education",
+    "text": "Education\nMSc Urban Spatial Science — University College London (UCL), 2026\nBS Statistics & Data Science — Yale University, 2021"
   }
 ]

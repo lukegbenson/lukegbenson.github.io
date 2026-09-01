@@ -30,7 +30,7 @@ This project requires extensive data preprocessing. Dataset 1 contains US county
 | geoid | Numeric | The unique identifier for the county.
 | county_name | Categorical | The name of the county. |
 | state_name | Categorical | The name of the US state. |
-| density | Numeric | The opulation density (population / land area) of the county. |
+| density | Numeric | The population density (population / land area) of the county. |
 | median_income | Numeric | The median income (in dollars) of the county. |
 | median_age | Numeric | The median age of residents of the county. |
 | pct_high_income | Numeric | The % of households making more than $200K. |
@@ -48,7 +48,7 @@ This project requires extensive data preprocessing. Dataset 1 contains US county
 | boston_celtics | Numeric | The estimated % of residents who support the Boston Celtics. | Provided at a DMA level. |
 | ... | Numeric | The estimated % of residents who support TEAM X | 28 other columns, 30 teams in total. Provided at a DMA level. | 
 | washington_wizards | Numeric | The estimated % of residents who support the Washington Wizards. | Provided at a DMA level. |
-: {#tbl-variables tbl-colwidths="[18, 10, 32, 40]"}
+: {tbl-colwidths="[18, 10, 32, 40]"}
 
 
 ## Dataset 3: NBA Teams

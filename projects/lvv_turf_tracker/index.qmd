@@ -1,0 +1,10 @@
+---
+title: "Las Vegas Valley Turf Tracker"
+description: "Tracking green space loss and the related environmental impacts since the passage of Nevada AB356."
+date: 2026-04-26
+image: lvv_banner.jpeg
+---
+
+<script>
+window.location.replace("https://yxing82.github.io/CASA0025_Final_Project/");
+</script>
