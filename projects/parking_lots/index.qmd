@@ -111,9 +111,9 @@ Using our four parking lot variables, how accurately can we estimate car usage i
 
 At this point, there are several ways I could make this more complicated. I could add a set of demographic, geographic, and economic variables. I could use a random forest model, include a cross-validation scheme, or just generally use more sophisticated modeling techniques.
 
-But we're not going to do that.
+But I'm not going to do that.
 
-The purpose here is that I want to estimate a multifaceted, complex behavioral data point using an almost comically small amount of information. I keep the model appropriately simple: a linear regression using the four parking-lot variables above.
+The purpose here is that I want to estimate a multifaceted, complex behavioral data point using this almost comically small amount of information. Appropriately, I keep the model simple as well: a linear regression using the four parking-lot variables above.
 
 And, surprisingly, it works pretty well.
 
@@ -156,6 +156,4 @@ No, I am not recommending that cities use parking lot footprints as their method
 
 Nor am I claiming that a four-variable linear model has somehow uncovered the underlying mechanism of transportation decisions. This exercise is deliberately frivolous and reductive. There are many demographic, geographic, and economic variables which would improve a model like this, and much more sophisticated methods for better reflecting the complex relationships that drive car usage. 
 
-But the fact that we can throw four features derived from parking lot footprints into a very simple model and explain more than half the variation in car usage is pretty striking.
-
-The connection between the physical space designated for car storage and the tendency for people to drive their cars is clear. If we continue to design our cities as giant storage units for cars, we can’t be surprised when our streets remain filled with them.
+But the fact that we can throw four features derived from parking lot footprints into a very simple model and explain more than half the variation in car usage is pretty striking. The connection between the physical space designated for car storage and the tendency for people to drive their cars is clear. If we continue to design our cities as giant storage units for cars, we can’t be surprised when our streets remain filled with them.
