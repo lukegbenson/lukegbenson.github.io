@@ -1,6 +1,6 @@
 ---
 title: "Parking Pandemonium"
-description: "Explaining car usage in US cities using solely the footprints of their parking lots."
+description: "An attempt to explain car usage in US cities using nothing but parking lot footprints."
 date: 2026-01-08
 image: parking_lot_banner.png
 ---
@@ -13,15 +13,25 @@ figure figcaption {
 
 [{{< fa brands github >}} View code on GitHub](https://github.com/lukegbenson/parking_lot_analysis){.btn .btn-outline-primary .btn-sm}
 
-# A parking cycle
+# A ridiculous question?
 
-There’s nothing inherently evil about parking. In a country built around car transport, like the US, it ensures that drivers have the ability to store their car near their homes, close to work, or right in front of the grocery store.
+There’s nothing inherently evil about parking. In a country built around car transport, like the US, it ensures that drivers have somewhere to leave their cars near their homes, close to work, or right in front of the grocery store.
 
-But, man, does it make for an [ugly](https://images.squarespace-cdn.com/content/v1/57363f21f699bbae5ebeb9e8/1468253438267-UI484QZM3WU6UGBGC9FN/Half+empty+parking+lot.jpg?format=1500w){target="_blank"} landscape. It takes up space that could otherwise be used to create dense, walkable neighborhoods. Minimum parking requirements for new developments [drastically increase](https://vtpi.org/park-hou.pdf){target="_blank"} housing prices. And [research](https://journals.sagepub.com/doi/abs/10.1177/0042098021995139){target="_blank"} has shown that parking supply actually impacts transportation decisions, leading people to drive more frequently. Once people drive more frequently, the next step, historically, has been to... build more parking.
+But, man, does it make for an [ugly](https://images.squarespace-cdn.com/content/v1/57363f21f699bbae5ebeb9e8/1468253438267-UI484QZM3WU6UGBGC9FN/Half+empty+parking+lot.jpg?format=1500w){target="_blank"} landscape.
 
-Given the connection between parking and driving decisions, how well can we explain car usage in US cities using solely the cities' parking lots maps?[^1]
+It takes up space that could otherwise be used to create dense, walkable neighborhoods. Minimum parking requirements for new developments [drastically increase](https://vtpi.org/park-hou.pdf){target="_blank"} housing prices. And [research](https://journals.sagepub.com/doi/abs/10.1177/0042098021995139){target="_blank"} has shown that parking supply actually impacts transportation decisions, leading people to drive more frequently. Once people drive more frequently, the next step, historically, has been to... build more parking.
+
+So parking and driving are, obviously, related. But maybe I should take it a step farther (too far?). 
+
+**What if we could estimate how much people drive simply by looking at parking lots?**
+
+Forget parking prices, transit access, and employment density. Ignore population sociodemographics. For now, let's not think about many of the things that actually influence how people get around. Let's focus on just the parking lots.
+
+This is, of course, a reductive and somewhat ridiculous question, but it is also precisely the point of the exercise. If all we know about a city is where its parking lots are, how much can we learn about its car usage?[^1]
 
 [^1]: To estimate car usage in central city areas, we look to the US American Community Survey (ACS). The ACS comes up with [estimates](https://data.census.gov/table?q=b08301&g=010XX00US$1500000){target="_blank"} for the total number of travel to work trips within each US Census area and the number of those trips which are taken via car. While work trips may not be a perfect stand-in for all trips, the percentage of total work trips taken via car seems like a reasonable estimate for car usage.
+
+We will not employ any complex machine learning approach here. Instead, we'll engineer a handful of features from city parking lot footprints and fit a simple linear model. Let's see what we get.
 
 
 # Lot maps
@@ -30,7 +40,11 @@ The [Parking Reform Network](https://parkingreform.org/){target="_blank"} (PRN) 
 
 [^2]: While [Open Street Map](https://www.openstreetmap.org){target="_blank"} (OSM) contains community-contributed parking locations and some [individual cities](https://data.cityofnewyork.us/City-Government/NYC-Planimetric-Database-Parking-Lot/h7zy-iq3d){target="_blank"} maintain open-source lot datasets, the PRN maps comprise the most comprehensive curated dataset for off-street parking in US cities. 
 
-Other than geographic coordinates, there are no actual variables in this data: no indication of lot structure, no total car capacity or price of parking. Therefore, to try to predict car usage, we need to engineer variables using just the geographic locations of the lots.
+This dataset contains essentially one useful piece of information: **where the parking lots are**. There is no additional information about how many cars fit in each lot, what the parking costs, whether the lots are full or sit empty most of the day. 
+
+Rather than pulling in outside data to fill in these gaps, we'll construct a few variables using only the geographic footprint of the lots. The goal is not to build the best possible model of car usage. Instead, we want to see how much explanatory power we can get from the small amount of information we do have.
+
+We construct the following variables.
 
 **Lot area percentage**: *The percentage of the total area of the central city which is covered by parking lots.*
 
@@ -95,13 +109,23 @@ Using our four parking lot variables, how accurately can we estimate car usage i
 
 # Estimating car usage
 
-More than 50% of the variation in car usage in city central areas can be explained by parking lots alone — if all we know about a central city area is the coordinates of its parking lots, we can do a pretty good job of estimating how frequently people who live there drive to work.
+At this point, there are several ways we could make this more complicated. We could add a set of demographic, geographic, and economic variables. We could use a random forest model, include a cross-validation scheme, or just generally use more sophisticated modeling techniques.
+
+But we're not going to do that.
+
+The purpose here is that we want to estimate a multifaceted, complex behavioral data point using an almost comically small amount of information. We keep the model appropriately simple: a linear regression using the four parking-lot variables above.
+
+And, surprisingly, it works pretty well.
+
+**More than 50% of the variation in car usage in city central areas can be explained by parking lots alone.** If all we know about a central city area is the coordinates of its parking lots, we can do a pretty good job of estimating how frequently people who live there drive to work.
 
 <figure style="width: 80%; margin: auto;">
   <img src="lots_estimated_usage.png" style="width: 100%;">
   <figcaption>Actual car usage vs. estimated car usage. Using just parking lot footprints, we can explain 50.4% of the variation in car usage.</figcaption>
 </figure>
 
+
+To be clear, this does not mean that parking lots are a magical crystal ball for transportation behavior. The model is deliberately simple, and these variables are almost surely standing in for a whole collection of other characteristics of the built environment.
 
 The actual model used to estimate car usage relies primarily on two factors: 1) the square root of lot area percentage, and 2) the average lot size. The Gini coefficient and orientation entropy, while interesting, are ultimately not useful in predicting car usage.
 
@@ -128,16 +152,10 @@ The important thing to note here is the model already accounts for the city’s 
 
 # Moving forward
 
-No, I am not recommending that we use only parking lot features to predict how car usage might change in the future. But, nevertheless, the connection between the physical space designated for car storage and the tendency for people to drive their cars is clear. If we continue to design our cities as giant storage units for cars, we can’t be surprised when our streets remain filled with them.
+No, I am not recommending that cities use parking lot footprints as their method for predicting future car usage. 
 
+Nor am I claiming that a four-variable linear model has somehow uncovered the underlying mechanism of transportation decisions. This exercise is deliberately frivolous and reductive. There are many demographic, geographic, and economic variables which would improve a model like this, and much more sophisticated methods for better reflecting the complex relationships that drive car usage. 
 
-# Technical appendix
+But the fact that we can throw four features derived from parking lot footprints into a very simple model and explain more than half the variation in car usage is pretty striking.
 
-
-
-
-
-
-
-
-
+The connection between the physical space designated for car storage and the tendency for people to drive their cars is clear. If we continue to design our cities as giant storage units for cars, we can’t be surprised when our streets remain filled with them.
