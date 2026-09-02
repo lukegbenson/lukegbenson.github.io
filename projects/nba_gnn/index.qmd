@@ -31,7 +31,18 @@ Importantly, the Google Trends data is limited in a couple key ways.
 
 First, as something derived from only Google searches, it reflects a partial (and very limited) view of true NBA fandom. It's used as a proxy for real fandom here, but other and more complex fandom percentage estimates could be used for a future project.
 
-Second, fandom is not actually observed at the county level here. It's estimated at the Desginated Market Area (DMA) level, where every county belongs to exactly one media market. This constraint influences how I end up training the model.
+Second, fandom is not actually observed at the county level here. It's estimated at the Desginated Market Area (DMA) level, where every county belongs to exactly one of the 210 media markets. This constraint influences how I end up training the model.
+
+<iframe
+  src="observed_dma.html"
+  width="100%"
+  height="600"
+  style="border: none;">
+</iframe>
+
+<p class="figure-caption">
+  Fandom percentages are provided at the DMA level, and so they are uniform across counties within the same media market. The Golden State Warriors and Boston Celtics are popular teams whose fanbases span across the entire country.
+</p>
 
 
 # How can I model fandom?
@@ -124,6 +135,19 @@ Assuming both teams start with roughly league-average valuation and team success
 Both numbers are roughly middle-of-the-pack numbers amongst all NBA teams.
 
 ![Esimated fandom percentages under league expansion in Seattle and Las Vegas. Using this model, the two new teams could expect roughly middle-of-the-pack fandom percentages.](fandom_expansion_predicted.png)
+
+Take a look at the fandom estimates visually under the current league structure versus the anticipated expansion.
+
+<iframe
+  src="predicted_expansion.html"
+  width="100%"
+  height="600"
+  style="border: none;">
+</iframe>
+
+<p class="figure-caption">
+  Estimated fandom affinities under the current 30-team league structure and under the proposed 32-team expansion.
+</p>
 
 Visually, these fans, expectedly, are concentrated in counties surrounding each city: Seattle fandom radiates outward from King county, appropriately cut off into Oregon by Portland Trailblazers fandom.
 
