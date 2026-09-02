@@ -377,7 +377,12 @@ ul.task-list li input[type="checkbox"] {
 <p><strong>Team affinities</strong>: estimated support for each NBA team in every US county, derived from 5 years of the latest Google Trends data at the DMA level.</p>
 <p>Importantly, the Google Trends data is limited in a couple key ways.</p>
 <p>First, as something derived from only Google searches, it reflects a partial (and very limited) view of true NBA fandom. It’s used as a proxy for real fandom here, but other and more complex fandom percentage estimates could be used for a future project.</p>
-<p>Second, fandom is not actually observed at the county level here. It’s estimated at the Desginated Market Area (DMA) level, where every county belongs to exactly one media market. This constraint influences how I end up training the model.</p>
+<p>Second, fandom is not actually observed at the county level here. It’s estimated at the Desginated Market Area (DMA) level, where every county belongs to exactly one of the 210 media markets. This constraint influences how I end up training the model.</p>
+<iframe src="observed_dma.html" width="100%" height="600" style="border: none;">
+</iframe>
+<p class="figure-caption">
+Fandom percentages are provided at the DMA level, and so they are uniform across counties within the same media market. The Golden State Warriors and Boston Celtics are popular teams whose fanbases span across the entire country.
+</p>
 </section>
 <section id="how-can-i-model-fandom" class="level1">
 <h1>How can I model fandom?</h1>
@@ -459,6 +464,12 @@ ul.task-list li input[type="checkbox"] {
 <figcaption>Esimated fandom percentages under league expansion in Seattle and Las Vegas. Using this model, the two new teams could expect roughly middle-of-the-pack fandom percentages.</figcaption>
 </figure>
 </div>
+<p>Take a look at the fandom estimates visually under the current league structure versus the anticipated expansion.</p>
+<iframe src="predicted_expansion.html" width="100%" height="600" style="border: none;">
+</iframe>
+<p class="figure-caption">
+Estimated fandom affinities under the current 30-team league structure and under the proposed 32-team expansion.
+</p>
 <p>Visually, these fans, expectedly, are concentrated in counties surrounding each city: Seattle fandom radiates outward from King county, appropriately cut off into Oregon by Portland Trailblazers fandom.</p>
 <iframe src="seattle_expansion.html" width="100%" height="600" style="border: none;">
 </iframe>
