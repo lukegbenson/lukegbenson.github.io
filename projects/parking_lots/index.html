@@ -424,8 +424,8 @@ The rose diagram reveals the high degree of directional order among parking lots
 <section id="estimating-car-usage" class="level1">
 <h1>Estimating car usage</h1>
 <p>At this point, there are several ways I could make this more complicated. I could add a set of demographic, geographic, and economic variables. I could use a random forest model, include a cross-validation scheme, or just generally use more sophisticated modeling techniques.</p>
-<p>But we’re not going to do that.</p>
-<p>The purpose here is that I want to estimate a multifaceted, complex behavioral data point using an almost comically small amount of information. I keep the model appropriately simple: a linear regression using the four parking-lot variables above.</p>
+<p>But I’m not going to do that.</p>
+<p>The purpose here is that I want to estimate a multifaceted, complex behavioral data point using this almost comically small amount of information. Appropriately, I keep the model simple as well: a linear regression using the four parking-lot variables above.</p>
 <p>And, surprisingly, it works pretty well.</p>
 <p><strong>More than 50% of the variation in car usage in city central areas can be explained by parking lots alone.</strong> If all we know about a central city area is the coordinates of its parking lots, we can do a pretty good job of estimating how frequently people who live there drive to work.</p>
 <figure style="width: 80%; margin: auto;" class="figure">
@@ -478,8 +478,7 @@ Lot size, density, and total footprint. The total lot percentage is simply the p
 <h1>Moving forward</h1>
 <p>No, I am not recommending that cities use parking lot footprints as their method for predicting future car usage.</p>
 <p>Nor am I claiming that a four-variable linear model has somehow uncovered the underlying mechanism of transportation decisions. This exercise is deliberately frivolous and reductive. There are many demographic, geographic, and economic variables which would improve a model like this, and much more sophisticated methods for better reflecting the complex relationships that drive car usage.</p>
-<p>But the fact that we can throw four features derived from parking lot footprints into a very simple model and explain more than half the variation in car usage is pretty striking.</p>
-<p>The connection between the physical space designated for car storage and the tendency for people to drive their cars is clear. If we continue to design our cities as giant storage units for cars, we can’t be surprised when our streets remain filled with them.</p>
+<p>But the fact that we can throw four features derived from parking lot footprints into a very simple model and explain more than half the variation in car usage is pretty striking. The connection between the physical space designated for car storage and the tendency for people to drive their cars is clear. If we continue to design our cities as giant storage units for cars, we can’t be surprised when our streets remain filled with them.</p>
 
 
 </section>
