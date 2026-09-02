@@ -363,14 +363,14 @@ figure figcaption {
 <p><strong>What if we could estimate how much people drive simply by looking at parking lots?</strong></p>
 <p>Forget parking prices, transit access, and employment density. Ignore population sociodemographics. For now, let’s not think about many of the things that actually influence how people get around. Let’s focus on just the parking lots.</p>
 <p>This is, of course, a reductive and somewhat ridiculous question, but it is also precisely the point of the exercise. If all we know about a city is where its parking lots are, how much can we learn about its car usage?<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
-<p>We will not employ any complex machine learning approach here. Instead, we’ll engineer a handful of features from city parking lot footprints and fit a simple linear model. Let’s see what we get.</p>
+<p>I will not employ any complex machine learning approach here. Instead, I’ll engineer a handful of features from city parking lot footprints and fit a simple linear model. Let’s see what we get.</p>
 </section>
 <section id="lot-maps" class="level1">
 <h1>Lot maps</h1>
 <p>The <a href="https://parkingreform.org/" target="_blank">Parking Reform Network</a> (PRN) has mapped surface parking and above ground garages within the <a href="https://parkingreform.org/resources/parking-lot-map/parking-lot-map-boundary-methodology/" target="_blank">highest-density zoning district</a> of more than 100 US cities.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
 <p>This dataset contains essentially one useful piece of information: <strong>where the parking lots are</strong>. There is no additional information about how many cars fit in each lot, what the parking costs, whether the lots are full or sit empty most of the day.</p>
-<p>Rather than pulling in outside data to fill in these gaps, we’ll construct a few variables using only the geographic footprint of the lots. The goal is not to build the best possible model of car usage. Instead, we want to see how much explanatory power we can get from the small amount of information we do have.</p>
-<p>We construct the following variables.</p>
+<p>Rather than pulling in outside data to fill in these gaps, I’ll construct a few variables using only the geographic footprint of the lots. The goal is not to build the best possible model of car usage. Instead, I want to see how much explanatory power I can get from the small amount of information I do have.</p>
+<p>I construct the following variables.</p>
 <p><strong>Lot area percentage</strong>: <em>The percentage of the total area of the central city which is covered by parking lots.</em></p>
 <p>The leader in this category is San Bernardino, California, with more than 36.6% of its total space dedicated to surface and above ground parking.</p>
 <figure style="width: 80%; margin: auto;" class="figure">
@@ -423,9 +423,9 @@ The rose diagram reveals the high degree of directional order among parking lots
 </section>
 <section id="estimating-car-usage" class="level1">
 <h1>Estimating car usage</h1>
-<p>At this point, there are several ways we could make this more complicated. We could add a set of demographic, geographic, and economic variables. We could use a random forest model, include a cross-validation scheme, or just generally use more sophisticated modeling techniques.</p>
+<p>At this point, there are several ways I could make this more complicated. I could add a set of demographic, geographic, and economic variables. I could use a random forest model, include a cross-validation scheme, or just generally use more sophisticated modeling techniques.</p>
 <p>But we’re not going to do that.</p>
-<p>The purpose here is that we want to estimate a multifaceted, complex behavioral data point using an almost comically small amount of information. We keep the model appropriately simple: a linear regression using the four parking-lot variables above.</p>
+<p>The purpose here is that I want to estimate a multifaceted, complex behavioral data point using an almost comically small amount of information. I keep the model appropriately simple: a linear regression using the four parking-lot variables above.</p>
 <p>And, surprisingly, it works pretty well.</p>
 <p><strong>More than 50% of the variation in car usage in city central areas can be explained by parking lots alone.</strong> If all we know about a central city area is the coordinates of its parking lots, we can do a pretty good job of estimating how frequently people who live there drive to work.</p>
 <figure style="width: 80%; margin: auto;" class="figure">
@@ -488,7 +488,7 @@ Lot size, density, and total footprint. The total lot percentage is simply the p
 <div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
-<li id="fn1"><p>To estimate car usage in central city areas, we look to the US American Community Survey (ACS). The ACS comes up with <a href="https://data.census.gov/table?q=b08301&amp;g=010XX00US$1500000" target="_blank">estimates</a> for the total number of travel to work trips within each US Census area and the number of those trips which are taken via car. While work trips may not be a perfect stand-in for all trips, the percentage of total work trips taken via car seems like a reasonable estimate for car usage.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn1"><p>To estimate car usage in central city areas, I look to the US American Community Survey (ACS). The ACS comes up with <a href="https://data.census.gov/table?q=b08301&amp;g=010XX00US$1500000" target="_blank">estimates</a> for the total number of travel to work trips within each US Census area and the number of those trips which are taken via car. While work trips may not be a perfect stand-in for all trips, the percentage of total work trips taken via car seems like a reasonable estimate for car usage.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn2"><p>While <a href="https://www.openstreetmap.org" target="_blank">Open Street Map</a> (OSM) contains community-contributed parking locations and some <a href="https://data.cityofnewyork.us/City-Government/NYC-Planimetric-Database-Parking-Lot/h7zy-iq3d" target="_blank">individual cities</a> maintain open-source lot datasets, the PRN maps comprise the most comprehensive curated dataset for off-street parking in US cities.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section></div></main> <!-- /main -->
