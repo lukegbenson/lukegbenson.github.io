@@ -158,14 +158,14 @@ Finally, this work considers only the proposed sites of Seattle and Las Vegas. I
 
 # References
 
-Bontemps, T. (2020). Adam Silver acknowledges possibility of NBA expansion. [online] ESPN.com. Available at: [https://www.espn.co.uk/nba/story/_/id/30576045/adam-silver-acknowledges-possibility-nba-expansion](https://www.espn.co.uk/nba/story/_/id/30576045/adam-silver-acknowledges-possibility-nba-expansion).
+Bontemps, T. (2020). Adam Silver acknowledges possibility of NBA expansion. [online] ESPN.com. Available at: [https://www.espn.co.uk/nba/story/_/id/30576045/adam-silver-acknowledges-possibility-nba-expansion](https://www.espn.co.uk/nba/story/_/id/30576045/adam-silver-acknowledges-possibility-nba-expansion){target="_blank"}.
 
-Funk, D.C. and James, J. (2001). The Psychological Continuum Model: A Conceptual Framework for Understanding an Individual’s Psychological Connection to Sport. Sport Management Review, 4(2), pp.119-150. doi:[https://doi.org/10.1016/S1441-3523(01)70072-1](https://doi.org/10.1016/S1441-3523(01)70072-1).
+Funk, D.C. and James, J. (2001). The Psychological Continuum Model: A Conceptual Framework for Understanding an Individual’s Psychological Connection to Sport. Sport Management Review, 4(2), pp.119-150. doi:[https://doi.org/10.1016/S1441-3523(01)70072-1](https://doi.org/10.1016/S1441-3523(01)70072-1){target="_blank"}.
 
-Hamilton, W. L., Ying, R. and Leskovec, J. (2017) Inductive representation learning on large graphs. In: Advances in Neural Information Processing Systems 30 (NeurIPS 2017), pp. 1024-1034. Available at: [https://arxiv.org/abs/1706.02216](https://arxiv.org/abs/1706.02216).
+Hamilton, W. L., Ying, R. and Leskovec, J. (2017) Inductive representation learning on large graphs. In: Advances in Neural Information Processing Systems 30 (NeurIPS 2017), pp. 1024-1034. Available at: [https://arxiv.org/abs/1706.02216](https://arxiv.org/abs/1706.02216){target="_blank"}.
 
-Hassanzadeh, A., Davari, M. and Goossens, D. (2025). Fairness, Travel, and Market Potential: An Optimization Framework for NBA Expansion. arXiv preprint arXiv:2512.16968. Available at: [https://arxiv.org/abs/2512.16968](https://arxiv.org/abs/2512.16968).
+Hassanzadeh, A., Davari, M. and Goossens, D. (2025). Fairness, Travel, and Market Potential: An Optimization Framework for NBA Expansion. arXiv preprint arXiv:2512.16968. Available at: [https://arxiv.org/abs/2512.16968](https://arxiv.org/abs/2512.16968){target="_blank"}.
 
-NBA Official Release (2026). NBA Board of Governors approves exploration of expansion to Seattle, Las Vegas. [online] NBA. Available at: [https://www.nba.com/news/nba-board-of-governors-exploration-seattle-las-vegas-expansion](https://www.nba.com/news/nba-board-of-governors-exploration-seattle-las-vegas-expansion).
+NBA Official Release (2026). NBA Board of Governors approves exploration of expansion to Seattle, Las Vegas. [online] NBA. Available at: [https://www.nba.com/news/nba-board-of-governors-exploration-seattle-las-vegas-expansion](https://www.nba.com/news/nba-board-of-governors-exploration-seattle-las-vegas-expansion){target="_blank"}.
 
-Rascher, D. and Rascher, H. (2004). NBA Expansion and Relocation: A Viability Study of Various Cities. Journal of Sport Management, 18(3), pp.274-295. doi:[https://doi.org/10.1123/jsm.18.3.274](https://doi.org/10.1123/jsm.18.3.274).
+Rascher, D. and Rascher, H. (2004). NBA Expansion and Relocation: A Viability Study of Various Cities. Journal of Sport Management, 18(3), pp.274-295. doi:[https://doi.org/10.1123/jsm.18.3.274](https://doi.org/10.1123/jsm.18.3.274){target="_blank"}.
