@@ -10,11 +10,11 @@ image: seattle_stadium.jpg
 
 # What happens to NBA fandom when two new teams enter the league?
 
-The National Basketball Association (NBA) is considering expansion. The league has included 30 teams since 2004, but at the start of the decade, league commissioner Adam Silver [hinted](https://www.espn.co.uk/nba/story/_/id/30576045/adam-silver-acknowledges-possibility-nba-expansion){target="_blank"} that more teams could be added at a future date. Earlier this year, Silver [finally announced](https://www.nba.com/news/nba-board-of-governors-exploration-seattle-las-vegas-expansion){target="_blank"} that he would begin a more formal expansion process: the league would officially explore the feasibility of adding two teams in Seattle and Las Vegas.
+The National Basketball Association (NBA) is considering expansion. The league has included 30 teams since 2004, but at the start of the decade, league commissioner Adam Silver [hinted](https://www.espn.co.uk/nba/story/_/id/30576045/adam-silver-acknowledges-possibility-nba-expansion){target="_blank"} that more teams could be added at a future date. Earlier this year, Silver [finally announced](https://www.nba.com/news/nba-board-of-governors-exploration-seattle-las-vegas-expansion){target="_blank"} that he would begin a more formal expansion process. The league would officially explore the feasibility of adding two teams in Seattle and Las Vegas.
 
-There are many factors to consider for league expansion, including the impact of distributing talent across more teams, the competitiveness of play, and, crucially, where to place new franchises. Past research has assessed the most optimal cities for expansion through a variety of lenses, including [estimated team travel costs](https://arxiv.org/abs/2512.16968){target="_blank"} and [predicted attendance and revenue](https://doi.org/10.1123/jsm.18.3.274){target="_blank"}. However, central to the consideration of any expansion city is the city’s potential to attract fans: without fans, a new team is doomed to a short lifespan.
+There are many factors to consider for league expansion, including the impact of distributing talent across more teams, the competitiveness of play, and, crucially, where to place new franchises. Past research has assessed the most optimal cities for expansion through a variety of lenses, including [estimated team travel costs](https://arxiv.org/abs/2512.16968){target="_blank"} and [predicted attendance and revenue](https://doi.org/10.1123/jsm.18.3.274){target="_blank"}. However, central to the consideration of any expansion city is the city’s potential to attract fans. Without fans, a new team is doomed to a short lifespan.
 
-The potential for two teams raises an interesting question: given the current geographic distribution of NBA fans across the US, where could new NBA teams in Seattle and Las Vegas expect to attract fans from? How much of the national NBA fanbase could they potentially capture?
+The potential for two teams raises an interesting question: Given the current geographic distribution of NBA fans across the US, where could new NBA teams in Seattle and Las Vegas expect to attract fans from? How much of the national NBA fanbase could they potentially capture?
 
 
 # The data
@@ -41,7 +41,7 @@ Second, fandom is not actually observed at the county level here. It's estimated
 </iframe>
 
 <p class="figure-caption">
-  Fandom percentages are provided at the DMA level, and so they are uniform across counties within the same media market. The Golden State Warriors and Boston Celtics are popular teams whose fanbases span across the entire country.
+  Fandom percentages are provided at the DMA level, and so they are uniform across counties within the same media market. The Golden State Warriors and Boston Celtics are popular teams whose fanbases span the entire country.
 </p>
 
 
@@ -53,7 +53,7 @@ I want the model to capture two things simultaneously:
 
 **Fans tend to support nearby teams**. A person in Oregon, for example, is more likely to support the Portland Trailblazers than the Boston Celtics.
 
-**But geography is not everything**. The Celtics may still attract fans in Portland because of their historical legacy or recent success. Western Oregon may be more likely to support a team like the Celtics than, say, Northern California because of who lives there.
+**But geography is not everything**. The Celtics may still attract fans in Portland because of their historical legacy or recent success. Western Oregon may also be more likely to support a team like the Celtics than, say, Northern California because of the kind of people who live there.
 
 Conceptually, I frame NBA team affinities in any US county as the product of three principal factors: 1) geographic proximity to teams, 2) team success and legacy, and 3) the demographic and economic makeup of the county and surrounding counties. Learning how these features explain current team affinities then allows me to model how affinities may change upon the introduction of two expansion teams in Seattle and Las Vegas.
 
@@ -66,7 +66,7 @@ Counties are connected to neighboring counties, allowing a county to influence t
 
 More technically, this model is described as an inductive heterogeneous graph neural network (GNN). The GNN learns a general function which inputs the features of US counties and NBA teams and then outputs team affinities. By learning a *function* rather than fixed representations of the specific counties and teams, the model can then generalize to unseen counties or teams; this step is critical for when I add new teams in Seattle and Las Vegas. This is the kind of inductive GNN framework which was introduced in [GraphSAGE](https://arxiv.org/abs/1706.02216){target="_blank"}.
 
-The GNN can broadly be broken down into three components: 1) encoding, 2) message passing, and 3) decoding. The encoding layer consists of simple multilayer perceptrons (MLPs) which build initial embeddings for each team and county based solely on the node features. The message passing layer then updates county embeddings based on its proximal counties and closest *K* NBA teams. These first two components both use 30% dropout to reduce overfitting with a (relatively) small dataset. Finally, the decoding layer calculates the inner product between county embeddings and team embeddings to obtain a similarity score. This score is then weighted alongside a fixed distance decay score. Applying a Softmax function to the weighted scores over each county results in estimated county-level team fandom percentages.
+The GNN can broadly be broken down into three components: 1) encoding, 2) message passing, and 3) decoding. The encoding layer consists of simple multilayer perceptrons (MLPs) which build initial embeddings for each team and county based solely on the node features. The message passing layer then updates county embeddings based on its proximal counties and closest NBA teams. These first two components both use 30% dropout to reduce overfitting with a (relatively) small dataset. Finally, the decoding layer calculates the inner product between county embeddings and team embeddings to obtain a similarity score. This score is then weighted alongside a fixed distance decay score. Applying a Softmax function to the weighted scores over each county results in estimated county-level team fandom percentages.
 
 ![Inductive graph neural network (GNN) model architecture for learning team affinities based on team features, county features, and the spatial relationships between counties and teams.](nba_gnn_architecture.png)
 
