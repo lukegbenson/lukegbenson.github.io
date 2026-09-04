@@ -29,8 +29,9 @@ In the context of the underground, this measure captures the fraction of all oth
 
 [^2]: It is important to note that lines which run the same path from one station to the next are represented by only a single edge in this network. At King's Cross, for example, there is only one edge representing the shared paths of the Circle, Metropolitan, and Hammersmith \& City lines.
 
+::: {style="width: 90%; margin: auto;"}
 | Rank | Station | Degree Centrality |
-|---:|---|---:|
+|---|---|---|
 | 1 | Stratford | 0.0225 |
 | 2 | Bank and Monument | 0.0200 |
 | 3 | King's Cross St. Pancras | 0.0175 |
@@ -43,6 +44,7 @@ In the context of the underground, this measure captures the fraction of all oth
 | 5 | Earl's Court | 0.0150 |
 | 5 | Oxford Circus | 0.0150 |
 : Top stations ranked by Degree Centrality {#tbl-deg-cent}
+:::
 
 
 **Closeness Centrality**
@@ -55,8 +57,9 @@ In a topological network, the shortest path between any two nodes in the network
 
 In the underground network, the top-ranked stations by closeness centrality are the stations which require, on average, the fewest number of stops to get to any other station. These stations are crucial because they are centrally-located hubs which minimize the number of stops and, consequently, time needed for passengers to get anywhere in the network. Green Park, Bank and Monument, and King's Cross are all central stations with close proximity to most lines. These stations fittingly top the rankings in @tbl-close-cent.
 
+::: {style="width: 90%; margin: auto;"}
 | Rank | Station | Closeness Centrality |
-|---:|---|---:|
+|---|---|---|
 | 1 | Green Park | 0.1148 |
 | 2 | Bank and Monument | 0.1136 |
 | 3 | King's Cross St. Pancras | 0.1134 |
@@ -68,6 +71,7 @@ In the underground network, the top-ranked stations by closeness centrality are 
 | 8 | Farringdon | 0.1107 |
 | 10 | Moorgate | 0.1103 |
 : Top stations ranked by Closeness Centrality" {#tbl-close-cent}
+:::
 
 
 **Betweenness Centrality**
@@ -84,8 +88,9 @@ The top-ranked stations by betweenness centrality are the stations which most of
 
 [^4]: I should caveat that "greatest amount of rerouting", here, does not consider actual transport flows.
 
+::: {style="width: 90%; margin: auto;"}
 | Rank | Station | Betweenness Centrality |
-|---:|---|---:|
+|---|---|---|
 | 1 | Stratford | 0.2978 |
 | 2 | Bank and Monument | 0.2905 |
 | 3 | Liverpool Street | 0.2708 |
@@ -97,13 +102,17 @@ The top-ranked stations by betweenness centrality are the stations which most of
 | 9 | Baker Street | 0.1916 |
 | 10 | Finchley Road | 0.1651 |
 : Top stations ranked by Betweenness Centrality" {#tbl-bet-cent}
+:::
 
 
 ## Which measure is most appropriate?
 
 Removing nodes in order of their importance according to each centrality measure gives us some sense of how suitable that measure is for assessing network vulnerability. Each time I remove a node, the connected underground system is potentially separated into multiple disconnected components. The size of the remaining largest connected component (LCC) indicates the severity of the loss of connectivity. Removing a one-degree node at the end of a line, for example, will reduce the LCC size by one and leave most of the system functioning as usual. However, removing the only node that connects two components of the graph could sink the LCC size and leave passengers completely unable to travel to an entire half of the network. The centrality measure which displays the steepest dip in LCC size over several high-ranking node removals is the measure that probably best conveys which nodes are most important for network vulnerability.
 
+::: {.fig-narrow style="--fig-width: 95%"}
 ![Network Vulnerability.](node_removal.png){#fig-network-vulnerability}
+:::
+
 
 For each centrality measure, I ranked all nodes, removed the highest ranking node, and then computed the LCC. I then ran this same process again, 15 times in total. 
 
@@ -120,12 +129,14 @@ Computing centrality measures on a weighted network requires slight modification
 
 Closeness centrality and betweenness centrality both utilize the shortest paths between nodes. In a weighted network, the shortest path is no longer defined by the fewest number of hops needed to get from one node to the other, but by the path which minimizes the distance needed to get between those nodes. Given that adjacent nodes with greater flows between them are "closer" than adjacent nodes with fewer flows, I compute the geodesic distances between nodes in the network by using the paths which minimize the aggregated *inverse* flows between nodes.
 
+::: {style="width: 80%; margin: auto;"}
 | Measure | Most Important Station |
 |---|---|
 | Degree Centrality | Bank and Monument |
 | Closeness Centrality | Green Park |
 | Betweenness Centrality | Green Park |
 : Top station in a network weighted by flows" {#tbl-important-stations}
+:::
 
 With the flows-weighted network, it may also be important to consider eigenvector centrality. For a given station, eigenvector centrality considers the importance or centrality of stations connected to it. In the underground network, this measure would help identify stations which are connected to other high-flow stations along high-volume routes.
 
@@ -137,6 +148,7 @@ Mathematically, eigenvector centrality uses the network adjacency matrix, $A_{ij
 
 @tbl-eigen shows the top stations by this measure, and, as expected, centrally-located stations within high frequency corridors top the list: Waterloo, Bank and Monument, and Westminster.
 
+::: {style="width: 90%; margin: auto;"}
 | Rank | Station | Eigenvector Centrality |
 |---:|---|---:|
 | 1 | Waterloo | 0.5420 |
@@ -150,6 +162,7 @@ Mathematically, eigenvector centrality uses the network adjacency matrix, $A_{ij
 | 9 | Victoria | 0.1190 |
 | 10 | Oxford Circus | 0.1185 |
 : Top stations ranked by weighted Eigenvector Centrality" {#tbl-eigen}
+:::
 
 
 ## OD flows
@@ -166,7 +179,9 @@ Based on data provided by TfL, I assume the average walking speed is [4 km per h
 
 [^5]: The TfL mentions that trains go as slow as 15 mph, which is roughly 24.1 km/h. If a station were closed, I assume trains would generally travel at this slower speed.
 
+::: {.fig-narrow style="--fig-width: 95%"}
 ![Optimal path under Waterloo closure.](optimal_route.png){#fig-optimal-route}
+:::
 
 With these parameters, the optimal route in @fig-optimal-route is for passengers to walk 13.1 minutes to Southwark, take the Jubilee line to London Bridge, and then transfer to the Northern line to get to Bank and Monument. The total trip time estimate is 18 minutes.
 

@@ -5,12 +5,6 @@ date: 2026-01-08
 image: parking_lot_banner.png
 ---
 
-<style>
-figure figcaption {
-  margin-bottom: 2rem;
-}
-</style>
-
 [{{< fa brands github >}} View code on GitHub](https://github.com/lukegbenson/parking_lot_analysis){.btn .btn-outline-primary .btn-sm}
 
 # A ridiculous question?
@@ -50,10 +44,9 @@ I construct the following variables.
 
 The leader in this category is San Bernardino, California, with more than 36.6% of its total space dedicated to surface and above ground parking.
 
-<figure style="width: 80%; margin: auto;">
-  <img src="lots_san_bernardino.png" style="width: 100%;">
-  <figcaption>Parking lots in San Bernardino, California.</figcaption>
-</figure>
+::: {.fig-narrow style="--fig-width: 80%"}
+![Parking lots in San Bernardino, California.](lots_san_bernardino.png)
+:::
 
 
 **Average lot size**: *The average size of a parking lot in the city.*
@@ -67,28 +60,24 @@ Measured from 0 (equal) to 1 (unequal), this value captures how the total parkin
 
 At 0.71, Long Beach, California has a high Gini coefficient: the lot area is distributed very unevenly across lots. There are a couple lots near the coast which take up a lot of space and then tons of small lots scattered throughout the rest of central city.
 
-<figure style="width: 80%; margin: auto;">
-  <img src="lots_long_beach.png" style="width: 100%;">
-  <figcaption>Parking area is unevenly distributed among lots in Long Beach, Caifornia.</figcaption>
-</figure>
+::: {.fig-narrow style="--fig-width: 80%"}
+![Parking area is unevenly distributed among lots in Long Beach, Caifornia.](lots_long_beach.png)
+:::
 
 
 Compare that to Houston, Texas, where the Gini coefficient is just above 0.35 and the lots are roughly all the same size.
 
-<figure style="width: 80%; margin: auto;">
-  <img src="lots_houston.png" style="width: 100%;">
-  <figcaption>Parking in Houston, Texas, is evenly distributed and ordered within the city grid.</figcaption>
-</figure>
-
+::: {.fig-narrow style="--fig-width: 80%"}
+![Parking in Houston, Texas, is evenly distributed and ordered within the city grid](lots_houston.png)
+:::
 
 **Orientation entropy**: *A measure of the directional disorder of parking lot orientations.*
 
 This metric is common in [street network analysis](https://www.nature.com/articles/srep03324){target="_blank"}, and is useful in analyzing the level of order or planning in the built environment. Take Houston again, for example. The lots are almost all aligned with the principal directions of a clear street grid, and so entropy is low. A rose diagram highlights the distribution of these lot directions.
 
-<figure style="width: 80%; margin: auto;">
-  <img src="lots_rose_houston.png" style="width: 100%;">
-  <figcaption>The rose diagram reveals the high degree of directional order among parking lots in Houston.</figcaption>
-</figure>
+::: {.fig-narrow style="--fig-width: 80%"}
+![The rose diagram reveals the high degree of directional order among parking lots in Houston.](lots_rose_houston.png)
+:::
 
 
 Compare this to Houston’s fellow Texas city, San Antonio, which has one of the highest orientation entropies in the dataset: the street network molds and twists across overlapping sub-grids with lots taking on shapes that the streets afford them.
@@ -100,7 +89,7 @@ Compare this to Houston’s fellow Texas city, San Antonio, which has one of the
 :::
 
 ::: {.figure-caption}
-Parking lots in San Antonio are oriented in many directions, indicating high orientaiton entropy.
+Parking lots in San Antonio are oriented in many directions, indicating high orientation entropy.
 :::
 
 
@@ -119,10 +108,9 @@ And, surprisingly, it works pretty well.
 
 **More than 50% of the variation in car usage in city central areas can be explained by parking lots alone.** If all we know about a central city area is the coordinates of its parking lots, we can do a pretty good job of estimating how frequently people who live there drive to work.
 
-<figure style="width: 80%; margin: auto;">
-  <img src="lots_estimated_usage.png" style="width: 100%;">
-  <figcaption>Actual car usage vs. estimated car usage. Using just parking lot footprints, we can explain 50.4% of the variation in car usage.</figcaption>
-</figure>
+::: {.fig-narrow style="--fig-width: 80%"}
+![Actual car usage vs. estimated car usage. Using just parking lot footprints, we can explain 50.4% of the variation in car usage.](lots_estimated_usage.png)
+:::
 
 
 To be clear, this does not mean that parking lots are a magical crystal ball for transportation behavior. The model is deliberately simple, and these variables are almost surely standing in for a whole collection of other characteristics of the built environment.
@@ -138,16 +126,16 @@ The actual model used to estimate car usage relies primarily on two factors: 1) 
 | Orientation Entropy     | Insignificant |
 :::
 
+
 Lot area percentage has a strong positive relationship with car usage: the more space dedicated to parking, the higher the percentage of trips involving a car. Intuitively, this makes sense. The presence of the square root of the variable indicates that the impact of lot area percentage on car usage actually diminishes as we increase lot area percentage: we're going to see a larger spike in car usage going from 10% parking to 20% parking than from 20% to 30%.
 
 Average lot size has a smaller but still significant negative relationship with car usage, meaning that larger lot sizes actually correspond with a slight dip in car usage. Wouldn’t we expect larger lots to be associated with less walkable areas, more sprawl and, therefore, greater car usage?
 
 The important thing to note here is the model already accounts for the city’s total lot percentage: lot size is only associated with a dip in car usage when we've also considered total parking. The negative relationship makes sense when thinking about how average lot size interacts with lot density. Given two cities with the same total lot percentage, the city with the larger average lot size will (mathematically) have fewer lots per hectare. And it makes sense why a city with a few large lots might be less car dependent than the city with several smaller lots: the presence of many smaller lots implies a kind of ubiquity of car travel, while a few bigger lots may signify that the city is more of a park-then-walk destination for commuters living outside the central area.
 
-<figure style="width: 80%; margin: auto;">
-  <img src="lots_size_density_footprint.png" style="width: 100%;">
-  <figcaption>Lot size, density, and total footprint. The total lot percentage is simply the product of average lot size and lot density. Cities may have the same parking footprint with high density and small lots or low density and large lots.</figcaption>
-</figure>
+::: {.fig-narrow style="--fig-width: 80%"}
+![Lot size, density, and total footprint. The total lot percentage is simply the product of average lot size and lot density. Cities may have the same parking footprint with high density and small lots or low density and large lots.](lots_size_density_footprint.png)
+:::
 
 
 # Moving forward

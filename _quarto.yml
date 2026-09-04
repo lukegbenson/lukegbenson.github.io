@@ -24,3 +24,4 @@ format:
       light: cosmo
       dark: darkly
     toc: true
+    css: styles.css
