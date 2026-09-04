@@ -53,6 +53,8 @@ ul.task-list li input[type="checkbox"] {
 <link href="../../site_libs/bootstrap/bootstrap-445b8638c3d06994fee0907d791121c4.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
 <link href="../../site_libs/bootstrap/bootstrap-dark-df07115ad9f15e2ef3479c789e6873c8.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <link href="../../site_libs/bootstrap/bootstrap-445b8638c3d06994fee0907d791121c4.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/quarto-contrib/fontawesome6-6.7.2/all.min.css" rel="stylesheet">
+<link href="../../site_libs/quarto-contrib/fontawesome6-6.7.2/latex-fontsize.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -111,6 +113,7 @@ window.Quarto = {
 };
 </script>
 
+<link rel="stylesheet" href="../../styles.css">
 </head>
 
 <body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
@@ -382,6 +385,7 @@ window.Quarto = {
 </header>
 
 
+<p><a href="https://github.com/lukegbenson/underground_network_analysis" class="btn btn-outline-primary btn-sm"><i class="fa-brands fa-github" aria-label="github"></i> View code on GitHub</a></p>
 <section id="identifying-important-stations" class="level1">
 <h1>Identifying important stations</h1>
 <section id="centrality-measures" class="level2">
@@ -394,6 +398,7 @@ window.Quarto = {
     C(i) = \frac{k_i}{n - 1}
 \end{equation}\]</span></p>
 <p>In the context of the underground, this measure captures the fraction of all other stations to which each station is connected. The stations that rank highest in this metric allow passengers to reach the most stations directly within one stop, and so these stations probably serve as important transfer hubs. In <a href="#tbl-deg-cent" class="quarto-xref">Table&nbsp;1</a>, we see this to be the case: multi-line hubs like Stratford, Bank and Monument, and King’s Cross top the rankings.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
+<div style="width: 90%; margin: auto;">
 <div id="tbl-deg-cent" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-deg-cent-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -403,71 +408,72 @@ Table&nbsp;1: Top stations ranked by Degree Centrality
 <table class="caption-top table">
 <thead>
 <tr class="header">
-<th style="text-align: right;">Rank</th>
+<th>Rank</th>
 <th>Station</th>
-<th style="text-align: right;">Degree Centrality</th>
+<th>Degree Centrality</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: right;">1</td>
+<td>1</td>
 <td>Stratford</td>
-<td style="text-align: right;">0.0225</td>
+<td>0.0225</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">2</td>
+<td>2</td>
 <td>Bank and Monument</td>
-<td style="text-align: right;">0.0200</td>
+<td>0.0200</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">3</td>
+<td>3</td>
 <td>King’s Cross St.&nbsp;Pancras</td>
-<td style="text-align: right;">0.0175</td>
+<td>0.0175</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">3</td>
+<td>3</td>
 <td>Baker Street</td>
-<td style="text-align: right;">0.0175</td>
+<td>0.0175</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">5</td>
+<td>5</td>
 <td>Waterloo</td>
-<td style="text-align: right;">0.0150</td>
+<td>0.0150</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">5</td>
+<td>5</td>
 <td>Liverpool Street</td>
-<td style="text-align: right;">0.0150</td>
+<td>0.0150</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">5</td>
+<td>5</td>
 <td>West Ham</td>
-<td style="text-align: right;">0.0150</td>
+<td>0.0150</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">5</td>
+<td>5</td>
 <td>Canning Town</td>
-<td style="text-align: right;">0.0150</td>
+<td>0.0150</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">5</td>
+<td>5</td>
 <td>Green Park</td>
-<td style="text-align: right;">0.0150</td>
+<td>0.0150</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">5</td>
+<td>5</td>
 <td>Earl’s Court</td>
-<td style="text-align: right;">0.0150</td>
+<td>0.0150</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">5</td>
+<td>5</td>
 <td>Oxford Circus</td>
-<td style="text-align: right;">0.0150</td>
+<td>0.0150</td>
 </tr>
 </tbody>
 </table>
 </div>
 </figure>
+</div>
 </div>
 <p><strong>Closeness Centrality</strong></p>
 <p>In a topological network, the shortest path between any two nodes in the network, also called the <em>geodesic</em>, is the path which requires the fewest number of edges to traverse from one node to the other. Closeness centrality is then defined by the inverse of a node’s mean geodesic distance to all other (reachable) nodes. For any two nodes <span class="math inline">\(i\)</span> and <span class="math inline">\(j\)</span>, I denote the geodesic distance as <span class="math inline">\(d_{ij}\)</span>, and define closeness centrality as:</p>
@@ -475,6 +481,7 @@ Table&nbsp;1: Top stations ranked by Degree Centrality
     C(i) = \frac{n-1}{\sum_{j}^{n-1} d_{ij}}
 \end{equation}\]</span></p>
 <p>In the underground network, the top-ranked stations by closeness centrality are the stations which require, on average, the fewest number of stops to get to any other station. These stations are crucial because they are centrally-located hubs which minimize the number of stops and, consequently, time needed for passengers to get anywhere in the network. Green Park, Bank and Monument, and King’s Cross are all central stations with close proximity to most lines. These stations fittingly top the rankings in <a href="#tbl-close-cent" class="quarto-xref">Table&nbsp;2</a>.</p>
+<div style="width: 90%; margin: auto;">
 <div id="tbl-close-cent" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-close-cent-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -484,66 +491,67 @@ Table&nbsp;2: Top stations ranked by Closeness Centrality”
 <table class="caption-top table">
 <thead>
 <tr class="header">
-<th style="text-align: right;">Rank</th>
+<th>Rank</th>
 <th>Station</th>
-<th style="text-align: right;">Closeness Centrality</th>
+<th>Closeness Centrality</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: right;">1</td>
+<td>1</td>
 <td>Green Park</td>
-<td style="text-align: right;">0.1148</td>
+<td>0.1148</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">2</td>
+<td>2</td>
 <td>Bank and Monument</td>
-<td style="text-align: right;">0.1136</td>
+<td>0.1136</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">3</td>
+<td>3</td>
 <td>King’s Cross St.&nbsp;Pancras</td>
-<td style="text-align: right;">0.1134</td>
+<td>0.1134</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">4</td>
+<td>4</td>
 <td>Westminster</td>
-<td style="text-align: right;">0.1125</td>
+<td>0.1125</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">5</td>
+<td>5</td>
 <td>Waterloo</td>
-<td style="text-align: right;">0.1123</td>
+<td>0.1123</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">6</td>
+<td>6</td>
 <td>Oxford Circus</td>
-<td style="text-align: right;">0.1112</td>
+<td>0.1112</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">7</td>
+<td>7</td>
 <td>Bond Street</td>
-<td style="text-align: right;">0.1110</td>
+<td>0.1110</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">8</td>
+<td>8</td>
 <td>Angel</td>
-<td style="text-align: right;">0.1107</td>
+<td>0.1107</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">8</td>
+<td>8</td>
 <td>Farringdon</td>
-<td style="text-align: right;">0.1107</td>
+<td>0.1107</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">10</td>
+<td>10</td>
 <td>Moorgate</td>
-<td style="text-align: right;">0.1103</td>
+<td>0.1103</td>
 </tr>
 </tbody>
 </table>
 </div>
 </figure>
+</div>
 </div>
 <p><strong>Betweenness Centrality</strong></p>
 <p>The betweenness centrality of a node is the share of geodesics between all nodes in the network which pass through that node. Denoting <span class="math inline">\(n^i_{st}\)</span> as a binary variable which is 1 if node <span class="math inline">\(i\)</span> is on the geodesic from node <span class="math inline">\(s\)</span> to node <span class="math inline">\(t\)</span> and 0 if not, and <span class="math inline">\(g_{st}\)</span> as the total number of geodesics from <span class="math inline">\(s\)</span> to <span class="math inline">\(t\)</span> (there can be multiple shortest paths), betweenness centrality is defined as:<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></p>
@@ -551,6 +559,7 @@ Table&nbsp;2: Top stations ranked by Closeness Centrality”
     C(i) = \frac{2}{(n-1)(n-2)} \sum_{s,t} \frac{n^i_{st}}{g_{st}}
 \end{equation}\]</span></p>
 <p>The top-ranked stations by betweenness centrality are the stations which most often sit on the optimal route from one station to any other. These stations can, therefore, be thought of as critical bridges within the system which would cause the greatest amount rerouting if removed from the network.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a> <a href="#tbl-bet-cent" class="quarto-xref">Table&nbsp;3</a> highlights that Stratford, a critical bridge for eastern DLR stations, and Bank and Monument, a centrally-located multi-line station allowing connections across all directions, lead all stations in this measure.</p>
+<div style="width: 90%; margin: auto;">
 <div id="tbl-bet-cent" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-bet-cent-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -560,71 +569,73 @@ Table&nbsp;3: Top stations ranked by Betweenness Centrality”
 <table class="caption-top table">
 <thead>
 <tr class="header">
-<th style="text-align: right;">Rank</th>
+<th>Rank</th>
 <th>Station</th>
-<th style="text-align: right;">Betweenness Centrality</th>
+<th>Betweenness Centrality</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: right;">1</td>
+<td>1</td>
 <td>Stratford</td>
-<td style="text-align: right;">0.2978</td>
+<td>0.2978</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">2</td>
+<td>2</td>
 <td>Bank and Monument</td>
-<td style="text-align: right;">0.2905</td>
+<td>0.2905</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">3</td>
+<td>3</td>
 <td>Liverpool Street</td>
-<td style="text-align: right;">0.2708</td>
+<td>0.2708</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">4</td>
+<td>4</td>
 <td>King’s Cross St.&nbsp;Pancras</td>
-<td style="text-align: right;">0.2553</td>
+<td>0.2553</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">5</td>
+<td>5</td>
 <td>Waterloo</td>
-<td style="text-align: right;">0.2439</td>
+<td>0.2439</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">6</td>
+<td>6</td>
 <td>Green Park</td>
-<td style="text-align: right;">0.2158</td>
+<td>0.2158</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">7</td>
+<td>7</td>
 <td>Euston</td>
-<td style="text-align: right;">0.2083</td>
+<td>0.2083</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">8</td>
+<td>8</td>
 <td>Westminster</td>
-<td style="text-align: right;">0.2033</td>
+<td>0.2033</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">9</td>
+<td>9</td>
 <td>Baker Street</td>
-<td style="text-align: right;">0.1916</td>
+<td>0.1916</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">10</td>
+<td>10</td>
 <td>Finchley Road</td>
-<td style="text-align: right;">0.1651</td>
+<td>0.1651</td>
 </tr>
 </tbody>
 </table>
 </div>
 </figure>
 </div>
+</div>
 </section>
 <section id="which-measure-is-most-appropriate" class="level2">
 <h2 class="anchored" data-anchor-id="which-measure-is-most-appropriate">Which measure is most appropriate?</h2>
 <p>Removing nodes in order of their importance according to each centrality measure gives us some sense of how suitable that measure is for assessing network vulnerability. Each time I remove a node, the connected underground system is potentially separated into multiple disconnected components. The size of the remaining largest connected component (LCC) indicates the severity of the loss of connectivity. Removing a one-degree node at the end of a line, for example, will reduce the LCC size by one and leave most of the system functioning as usual. However, removing the only node that connects two components of the graph could sink the LCC size and leave passengers completely unable to travel to an entire half of the network. The centrality measure which displays the steepest dip in LCC size over several high-ranking node removals is the measure that probably best conveys which nodes are most important for network vulnerability.</p>
+<div class="fig-narrow" style="--fig-width: 95%">
 <div id="fig-network-vulnerability" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-network-vulnerability-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -634,6 +645,7 @@ Table&nbsp;3: Top stations ranked by Betweenness Centrality”
 Figure&nbsp;1: Network Vulnerability.
 </figcaption>
 </figure>
+</div>
 </div>
 <p>For each centrality measure, I ranked all nodes, removed the highest ranking node, and then computed the LCC. I then ran this same process again, 15 times in total.</p>
 <p><a href="#fig-network-vulnerability" class="quarto-xref">Figure&nbsp;1</a> displays the results. While the three measures show comparable results for the first five removals, removing the highest-ranking betweenness centrality node leads to the steepest drop-off in LCC size at future removals. Betweenness centrality should, therefore, be considered most appropriate for capturing network vulnerability. The stations identified by betweenness centrality are not only critical bridge points for optimal travel paths but are also vital for ensuring passengers have access to greater portions of the underground network at large.</p>
@@ -646,6 +658,7 @@ Figure&nbsp;1: Network Vulnerability.
 <p>In a weighted network, each edge carries a value. Here, I define edge weight based on the number of commuter flows during the morning AM peak, i.e.&nbsp;the number of commuters whose route includes the edge between two stations. A greater number of flows between two stations signifies greater strength of connection between those stations: the more people who use the path, the more important it is to the network.</p>
 <p>Computing centrality measures on a weighted network requires slight modifications to those measures. For degree centrality, instead of using the number of connections (degree) of a node, I use the total weight of those connections. The node with the greatest total flows will rank highest in degree centrality.</p>
 <p>Closeness centrality and betweenness centrality both utilize the shortest paths between nodes. In a weighted network, the shortest path is no longer defined by the fewest number of hops needed to get from one node to the other, but by the path which minimizes the distance needed to get between those nodes. Given that adjacent nodes with greater flows between them are “closer” than adjacent nodes with fewer flows, I compute the geodesic distances between nodes in the network by using the paths which minimize the aggregated <em>inverse</em> flows between nodes.</p>
+<div style="width: 80%; margin: auto;">
 <div id="tbl-important-stations" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-important-stations-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -677,12 +690,14 @@ Table&nbsp;4: Top station in a network weighted by flows”
 </div>
 </figure>
 </div>
+</div>
 <p>With the flows-weighted network, it may also be important to consider eigenvector centrality. For a given station, eigenvector centrality considers the importance or centrality of stations connected to it. In the underground network, this measure would help identify stations which are connected to other high-flow stations along high-volume routes.</p>
 <p>Mathematically, eigenvector centrality uses the network adjacency matrix, <span class="math inline">\(A_{ij}\)</span>, and the largest eigenvalue of the matrix, <span class="math inline">\(\lambda\)</span>, to recursively update the centrality score of a node based on the centrality scores of its neighbors:</p>
 <p><span class="math display">\[\begin{equation}
     C(i) = \frac{1}{\lambda} \sum_{j=1}^{n-1} A_{ij} C(j)
 \end{equation}\]</span></p>
 <p><a href="#tbl-eigen" class="quarto-xref">Table&nbsp;5</a> shows the top stations by this measure, and, as expected, centrally-located stations within high frequency corridors top the list: Waterloo, Bank and Monument, and Westminster.</p>
+<div style="width: 90%; margin: auto;">
 <div id="tbl-eigen" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-eigen-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -753,6 +768,7 @@ Table&nbsp;5: Top stations ranked by weighted Eigenvector Centrality”
 </div>
 </figure>
 </div>
+</div>
 </section>
 <section id="od-flows" class="level2">
 <h2 class="anchored" data-anchor-id="od-flows">OD flows</h2>
@@ -763,6 +779,7 @@ Table&nbsp;5: Top stations ranked by weighted Eigenvector Centrality”
 <h2 class="anchored" data-anchor-id="what-if-waterloo-closed">What if Waterloo closed?</h2>
 <p>The most popular journey is Waterloo to Bank and Monument. If Waterloo is closed, to which station should passengers walk in order to get to Bank and Monument?</p>
 <p>Based on data provided by TfL, I assume the average walking speed is <a href="https://tfl.gov.uk/corporate/transparency/freedom-of-information/foi-request-detail?referenceId=FOI-0318-2526" target="_blank">4 km per hour</a>, and the speed during train disruption is <a href="https://tfl.gov.uk/corporate/transparency/freedom-of-information/foi-request-detail?referenceId=FOI-0126-2223" target="_blank">24.1 km per hour</a>.<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a> Based on these parameters, I can compute the optimal path from Waterloo to Bank and Monument, i.e.&nbsp;the path which would take the shortest amount of time, during station closure.</p>
+<div class="fig-narrow" style="--fig-width: 95%">
 <div id="fig-optimal-route" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-optimal-route-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -772,6 +789,7 @@ Table&nbsp;5: Top stations ranked by weighted Eigenvector Centrality”
 Figure&nbsp;2: Optimal path under Waterloo closure.
 </figcaption>
 </figure>
+</div>
 </div>
 <p>With these parameters, the optimal route in <a href="#fig-optimal-route" class="quarto-xref">Figure&nbsp;2</a> is for passengers to walk 13.1 minutes to Southwark, take the Jubilee line to London Bridge, and then transfer to the Northern line to get to Bank and Monument. The total trip time estimate is 18 minutes.</p>
 <p>There are a couple key assumptions in this analysis. First, I do not account for the fact that transfers between lines take time; this would add to the total trip time. Second, to simplify the problem, I assume that all passengers start at the exact geographic coordinates Waterloo station. In the real world, while some passengers may instinctively head to the station to find that it is closed, others may see ahead of time that the station is closed and come up with an alternative route from their home or starting location.</p>

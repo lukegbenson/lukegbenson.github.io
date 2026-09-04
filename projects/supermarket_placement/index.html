@@ -6,10 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2026-08-20">
-<meta name="description" content="Deriving a behavioral metric for capturing the extent to which neighbors share destinations.">
+<meta name="dcterms.date" content="2026-04-27">
+<meta name="description" content="Spatial interaction modeling for investigating optimal supermarket placement in Havering.">
 
-<title>Measuring and Modeling Neighborhood Destination Heterogeneity – Luke Benson</title>
+<title>Supermarket Placement Analysis – Luke Benson</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -83,6 +83,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../../styles.css">
 </head>
@@ -308,7 +337,11 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#abstract" id="toc-abstract" class="nav-link active" data-scroll-target="#abstract">Abstract</a></li>
+  <li><a href="#introducing-spatial-interaction-models" id="toc-introducing-spatial-interaction-models" class="nav-link active" data-scroll-target="#introducing-spatial-interaction-models">Introducing spatial interaction models</a></li>
+  <li><a href="#the-placement-problem-at-hand" id="toc-the-placement-problem-at-hand" class="nav-link" data-scroll-target="#the-placement-problem-at-hand">The placement problem at hand</a></li>
+  <li><a href="#investing-in-a-location" id="toc-investing-in-a-location" class="nav-link" data-scroll-target="#investing-in-a-location">Investing in a location</a></li>
+  <li><a href="#what-if-transport-costs-increase" id="toc-what-if-transport-costs-increase" class="nav-link" data-scroll-target="#what-if-transport-costs-increase">What if transport costs increase?</a></li>
+  <li><a href="#accounting-for-a-realistic-mode-of-travel" id="toc-accounting-for-a-realistic-mode-of-travel" class="nav-link" data-scroll-target="#accounting-for-a-realistic-mode-of-travel">Accounting for a realistic mode of travel</a></li>
   </ul>
 </nav>
     </div>
@@ -318,12 +351,12 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Measuring and Modeling Neighborhood Destination Heterogeneity</h1>
+<h1 class="title">Supermarket Placement Analysis</h1>
 </div>
 
 <div>
   <div class="description">
-    Deriving a behavioral metric for capturing the extent to which neighbors share destinations.
+    Spatial interaction modeling for investigating optimal supermarket placement in Havering.
   </div>
 </div>
 
@@ -334,7 +367,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">August 20, 2026</p>
+      <p class="date">April 27, 2026</p>
     </div>
   </div>
   
@@ -346,16 +379,260 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p><a href="https://github.com/lukegbenson/destination_heterogeneity" class="btn btn-outline-primary btn-sm"><i class="fa-brands fa-github" aria-label="github"></i> View code on GitHub</a></p>
-<section id="abstract" class="level1">
-<h1>Abstract</h1>
-<p>Shared residence creates the potential for shared experience, but neighbors may still exhibit divergent mobility patterns. My work introduces neighborhood destination heterogeneity, a neighborhood-level behavioral measure which captures the degree to which residents of the same neighborhood differ in the destinations they visit. To allow for comparisons across neighborhoods with varying quantities of mobility data, I propose a sampling algorithm for estimating this metric from the GPS-derived visits of more than one million London residents. I show that this algorithm is robust to parameter selection. The resulting scores across Middle-layer Super Output Areas (MSOAs) reveal a central-peripheral gradient in which residents of central London neighborhoods generally visit more similar sets of destinations than their peripheral peers, though the City of London and parts of Westminster deviate from this pattern. Subsequent explanatory modeling investigates the influence of residential composition, structural opportunity, and behavioral affinities, with each variable group contributing significant predictors. Modeling results indicate that destination heterogeneity should not be exclusively interpreted as a measure of either behavioral freedom or environmental constraint: public transport access is associated with greater divergence among residents, while local amenity diversity is associated with greater convergence. I, therefore, propose destination heterogeneity as an indicator of realized collective behavior which reveals differences between neighborhoods that appear similar under existing opportunity and accessibility measures.</p>
-<p><em>Complete work to be provided upon department review of submission…</em></p>
+<p><a href="https://github.com/lukegbenson/supermarket_placement" class="btn btn-outline-primary btn-sm"><i class="fa-brands fa-github" aria-label="github"></i> View code on GitHub</a></p>
+<p>A new supermarket is opening in the London Borough of Havering, and two potential locations are under consideration. Where is the best location? How can I even best model this problem?</p>
+<section id="introducing-spatial-interaction-models" class="level1">
+<h1>Introducing spatial interaction models</h1>
+<p>Spatial interaction models estimate the flows between locations by using location features and some representation of the cost of getting between those locations. Specifically, the most basic model considers the trips between two places to be proportional to the product of the weight, or “mass”, of the origin and destination and inversely proportional to the cost or distance between the two.</p>
+<p><span id="eq-basic-sim"><span class="math display">\[
+    T_{ij} = k O_i^\alpha D_j^\gamma d_{ij}^{-\beta}
+\tag{1}\]</span></span></p>
+<p>In <a href="#eq-basic-sim" class="quarto-xref">Equation&nbsp;1</a>, the origin weight of any node <span class="math inline">\(i\)</span>, <span class="math inline">\(O_i\)</span>, the destination weight of a node <span class="math inline">\(j\)</span>, <span class="math inline">\(D_j\)</span>, and the distance between the two, <span class="math inline">\(d_{ij}\)</span>, are all known inputs. The number of trips, <span class="math inline">\(T_{ij}\)</span>, is the variable that we are trying to model using these variables. The parameters <span class="math inline">\(k\)</span>, <span class="math inline">\(\alpha\)</span>, <span class="math inline">\(\gamma\)</span>, and <span class="math inline">\(\beta\)</span> are all calibrated to best model the number of trips. <span class="math inline">\(\alpha\)</span> represents the impact of an origin’s weight on the number of trips: values greater than 1 indicate that increases in origin weight lead to disproportionately larger impacts to the number of trips, and values less than 1 indicate disproportionately smaller impacts. Similarly, <span class="math inline">\(\gamma\)</span> represents the impact of destination weight on the number of trips. <span class="math inline">\(\beta\)</span> represents the deterrence power of distance: lower values of <span class="math inline">\(\beta\)</span> would suggest that distance is not a huge deterrent, while high values would indicate that flows are very sensitive to increasing distance.</p>
+<p>A standard approach for calibrating these parameters is through Poisson regression, a statistical method which seeks to minimize the difference between estimated and observed trips under the assumption that these trips follow a Poisson distribution.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> Modeled through a Poisson regression, the total number of (unrounded) estimated flows will equal the total number of observed flows. However, the total estimated flows for any given origin or destination may vary widely from its observed flows. For this reason, this initial model is defined as an <strong>unconstrained</strong> spatial interaction model.</p>
+<p>Constrained spatial interaction models are extensions of this initial model. The <strong>production-constrained</strong> model conserves the total flows for each origin by setting <span class="math inline">\(O_i\)</span> to the number of trips starting at origin <span class="math inline">\(i\)</span> and then explicitly imposing that the total number of estimated flows at origin <span class="math inline">\(i\)</span> sum to <span class="math inline">\(O_i\)</span>. Instead of using a global scalar, <span class="math inline">\(k\)</span>, there is a balancing factor for each origin, <span class="math inline">\(A_i\)</span>. <span class="math inline">\(A_i\)</span> is essentially a scalar for each individual origin, and I can define it precisely to satisfy the desired imposed constraint.</p>
+<p><span id="eq-pc_sim"><span class="math display">\[
+    T_{ij} = A_i O_i D_j^\gamma d_{ij}^{-\beta}
+\tag{2}\]</span></span></p>
+<p>Where I define <span class="math inline">\(A_i\)</span> as:</p>
+<p><span class="math display">\[
+    A_i = \frac{1}{\sum_j D_j^\gamma d_{ij}^{-\beta}}
+\]</span></p>
+<p>If I substitute this value of <span class="math inline">\(A_i\)</span> back into <a href="#eq-pc_sim" class="quarto-xref">Equation&nbsp;2</a>, after a little math of summing over the total flows at each destination, I would arrive at: <span class="math inline">\(O_i=\sum_j T_{ij}\)</span>, i.e.&nbsp;that the sum of all estimated trips from an origin is equal to the total observed flows at that origin.</p>
+<p><strong>Attraction-constrained</strong> models similarly conserve the total flows for every destination by setting <span class="math inline">\(D_j\)</span> to the number of trips arriving at destination <span class="math inline">\(j\)</span> and then imposing that <span class="math inline">\(D_j=\sum_i T_{ij}\)</span>. <span class="math inline">\(B_j\)</span> represents a balancing scalar for a given destination <span class="math inline">\(j\)</span>, and I again define it in a way which allows me to impose the constraint.</p>
+<p><span id="eq-ac_sim"><span class="math display">\[
+    T_{ij} = D_j B_j O_i^\alpha d_{ij}^{-\beta}
+\tag{3}\]</span></span></p>
+<p>Where:</p>
+<p><span class="math display">\[
+    B_j = \frac{1}{\sum_i O_i^\alpha d_{ij}^{-\beta}}
+\]</span></p>
+<p>Substituting this value of <span class="math inline">\(B_j\)</span> back into Equation <a href="#eq-ac_sim" class="quarto-xref">Equation&nbsp;3</a> and summing over origins at the given destination, I end up with: <span class="math inline">\(D_j=\sum_i T_{ij}\)</span>, i.e.&nbsp;that the sum of all estimated trips to a destination is equal to the total observed flows at that destination.</p>
+<p>Finally, <strong>doubly-constrained</strong> models impose both origin totals, <span class="math inline">\(O_i=\sum_j T_{ij}\)</span>, and destination totals, <span class="math inline">\(D_j=\sum_i T_{ij}\)</span>, so that both the total origin and destination flows are preserved.</p>
+<p><span id="eq-dc_sim"><span class="math display">\[
+    T_{ij} = A_i B_j O_i D_j d_{ij}^{-\beta}
+\tag{4}\]</span></span></p>
+<p>The balancing factors are again defined to impose these constraints.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
+<p><span class="math display">\[
+    A_i = \frac{1}{\sum_j B_j D_j d_{ij}^{-\beta}}
+\]</span></p>
+<p>And:</p>
+<p><span class="math display">\[
+    B_j = \frac{1}{\sum_i A_i O_i d_{ij}^{-\beta}}
+\]</span></p>
+<p>Deciding which model to use depends on the conceptual problem at hand. Exploratory analysis for estimating the pull or push of specific locational features might not require anything beyond an unconstrained model. If we know where people live and want to estimate how a new mall will impact shopping patterns, a production-constrained model is most appropriate. On the other hand, say we know where people work and want to analyze how new housing infrastructure will affect where workers commute from – an attraction-constrained model would be best here. Finally, a doubly-constrained model is most fitting for the kind of problem where both origin and destination totals are known, such as in migration analysis when we know how many people leave and arrive in each country and want to estimate the specific country-to-country flows.</p>
+</section>
+<section id="the-placement-problem-at-hand" class="level1">
+<h1>The placement problem at hand</h1>
+<p>I am interested in modeling the flows from 2021 Output Areas (OAs) to supermarket locations in the London Borough of Havering. For this analysis, it seems reasonable to assume that supermarket conditions, including closures and openings, would not impact where people live in the short-term and, therefore, that the populations of each OA will remain fixed. Supermarket conditions will, however, impact where people choose to shop: if a new supermarket pops up, some shoppers will abandon their former store and head to the new one. For this reason, I fit a <strong>production-constrained</strong> model in which total trips originating from each OA are conserved while the destination flows to supermarkets are allowed to adjust.</p>
+<p>In this problem, <span class="math inline">\(T_{ij}\)</span> represents the number of trips from OA <span class="math inline">\(i\)</span> to supermarket <span class="math inline">\(j\)</span>,<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> <span class="math inline">\(O_i\)</span> is the population of each OA, and <span class="math inline">\(D_j\)</span> is a proxy for the weight or pull of the supermarket: the area of the supermarket. <span class="math inline">\(d_{ij}\)</span> is the distance in meters between the OA and the supermarket, and so it aptly represents a deterrence factor: the farther a supermarket, the more time and energy needed for people to walk there.</p>
+<p>Above, I introduced the models where trips were a function of an inverse power law of distance, i.e.&nbsp;<span class="math inline">\(d_{ij}^{-\beta}\)</span>. However, another way to represent the deterrence of distance is with the negative exponential distance decay function: <span class="math inline">\(\exp{(-\beta d_{ij})}\)</span>. The negative exponential function tails off more quickly than the inverse power function, making it perhaps better suited for smaller-scale urban process like this. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC5627933/" target="_blank">Similar research</a> modeling trips to retail centers through a production-constrained model also employed a negative exponential distance decay function. Given this precedent in the literature, I also utilize in the negative exponential function for distance to model trips:</p>
+<p><span id="eq-initial_sim_formula"><span class="math display">\[
+    T_{ij} = A_i O_i D_j^\gamma \exp{(-\beta d_{ij})}
+\tag{5}\]</span></span></p>
+<p>The goal of this modeling is not accurate predictions but, rather, to arrive at some estimate of the coefficient values of these variables. The key model coefficients and flow totals are shown in <a href="#tbl-initial-sim-coefs" class="quarto-xref">Table&nbsp;1</a> and <a href="#tbl-initial-sim-flows" class="quarto-xref">Table&nbsp;2</a>, respectively. The total flows at each origin are conserved. Rounding each flow to the nearest integer allows us to estimate real traveler flows, but also reduces the flow total due to rounding error.</p>
+<div style="width: 80%; margin: auto;">
+<div id="tbl-initial-sim-coefs" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-initial-sim-coefs-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1: Model coefficient values
+</figcaption>
+<div aria-describedby="tbl-initial-sim-coefs-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Coefficient</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(\gamma\)</span></td>
+<td><span class="math inline">\(0.116\)</span></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(\beta\)</span></td>
+<td><span class="math inline">\(2.26 \times 10^{-5}\)</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+</div>
+<div style="width: 80%; margin: auto;">
+<div id="tbl-initial-sim-flows" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-initial-sim-flows-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;2: Flow totals
+</figcaption>
+<div aria-describedby="tbl-initial-sim-flows-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Observed</th>
+<th>Estimated</th>
+<th>Rounded</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(80,604\)</span></td>
+<td><span class="math inline">\(80,604\)</span></td>
+<td><span class="math inline">\(79,358\)</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+</div>
+</section>
+<section id="investing-in-a-location" class="level1">
+<h1>Investing in a location</h1>
+<p>Now I want to use our calibrated model to estimate the total flows to two possible locations for a new small or large supermarket: OAs E00011326 and E00011710. To do this, I add the potential supermarket to the model and, using the learned <span class="math inline">\(\gamma\)</span> and <span class="math inline">\(\beta\)</span> parameters from the previous model, recalibrate the <span class="math inline">\(A_i\)</span> values to ensure our origin totals are conserved.</p>
+<div style="width: 90%; margin: auto;">
+<div id="tbl-supermarket-estimates" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-supermarket-estimates-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;3: Supermarket flow estimates
+</figcaption>
+<div aria-describedby="tbl-supermarket-estimates-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Size (m²)</th>
+<th>Location</th>
+<th>Estimated Flows</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>280</td>
+<td>E00011326</td>
+<td>1,382</td>
+</tr>
+<tr class="even">
+<td>280</td>
+<td>E00011710</td>
+<td>1,253</td>
+</tr>
+<tr class="odd">
+<td>2,800</td>
+<td>E00011326</td>
+<td>1,796</td>
+</tr>
+<tr class="even">
+<td>2,800</td>
+<td>E00011710</td>
+<td>1,629</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+</div>
+<p>Under both supermarket size options, placing a supermarket within E00011326 generates more total flows. Based on this evidence alone, I would suggest investing in OA E00011326 to attract greater numbers of shoppers.</p>
+<div class="fig-narrow" style="--fig-width: 95%">
+<div id="fig-trips-map" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-trips-map-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="supermarket_options.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-trips-map-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: New Supermarket Options.
+</figcaption>
+</figure>
+</div>
+</div>
+<p>However, there are critical spatial limitations of this model. <a href="#fig-trips-map" class="quarto-xref">Figure&nbsp;1</a> shows that E00011326 is in the middle of the borough, while E00011710 lies toward the edge. E00011326 is also much closer to higher-density trip neighborhoods. Given that flow estimate differences between the two options are driven by their distance to only OAs in Havering (their size, or “pull”, is the same), E00011326 is bound to generate greater flow estimates due to its centrality and proximity to high-trip Havering OAs. I am considering Havering as a closed-boundary system, but in reality, there would be many shoppers beyond the southeastern boundary who would travel to a supermarket in E00011326.</p>
+<p>There’s a second edge effects limitation with using our trips data: total trips are based on trips to only the supermarkets within the boundary. People in OAs on the periphery of the boundary are more likely to make trips outside of the boundary, and so these periphery OAs will be underrepresented in the data. The number of trips “available” from OAs closer to E00011710 is, therefore, less than it would be in reality.</p>
+<p>Additionally, based on the available locations, a supermarket in E00011326 would face stiffer competition. While this model relies on distance, it treats destinations as independent: two stores generate the same number of estimated trips from a given OA whether those stores are right next to each other or on opposite sides of the OA. Given that a supermarket in E00011710 has fewer supermarkets to compete with, it may perform better than the model estimates.</p>
+<p>Given the above limitations and the relatively close estimates for both small and large stores, a supermarket in E00011710 may, despite what the model suggests, actually end up being the best choice.</p>
+</section>
+<section id="what-if-transport-costs-increase" class="level1">
+<h1>What if transport costs increase?</h1>
+<p>Now let’s assume there is a sharp increase in transport costs: sidewalk conditions have deteriorated, pedestrian light times have decreased, and congestion is making intersections difficult to navigate, resulting in walk trips taking <em>twice</em> as long as they did before. <a href="#tbl-cost-up-supermarket-estimates" class="quarto-xref">Table&nbsp;4</a> highlights how E00011326’s centrality and proximity to trip-dense neighborhoods benefits it in this scenario. When transport costs increase across the board, the affinity for nearer places over farther places widens: the proportional increase in cost is the same, but the absolute difference in cost for farther places is greater.</p>
+<p>In these results, we see that flows to E00011326 go up in this scenario, while flows to the less central and less proximate-to-dense-trip-neighborhoods E00011710 drop significantly. At this point, E00011326 may truly be the advisable location.</p>
+<div style="width: 95%; margin: auto;">
+<div id="tbl-cost-up-supermarket-estimates" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-cost-up-supermarket-estimates-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;4: Supermarket flow estimates under 2x cost increase
+</figcaption>
+<div aria-describedby="tbl-cost-up-supermarket-estimates-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Size (m²)</th>
+<th>Location</th>
+<th>Estimated Flows</th>
+<th>Change in Flows</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>280</td>
+<td>E00011326</td>
+<td>1,395</td>
+<td>13</td>
+</tr>
+<tr class="even">
+<td>280</td>
+<td>E00011710</td>
+<td>1,152</td>
+<td>-101</td>
+</tr>
+<tr class="odd">
+<td>2,800</td>
+<td>E00011326</td>
+<td>1,813</td>
+<td>17</td>
+</tr>
+<tr class="even">
+<td>2,800</td>
+<td>E00011710</td>
+<td>1,498</td>
+<td>-131</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+</div>
+<p>Just as before, flows are conserved with these estimates by recalibrating <span class="math inline">\(A_i\)</span> with the new cost values to enforce the constraint of <span class="math inline">\(O_i=\sum_j T_{ij}\)</span>.</p>
+</section>
+<section id="accounting-for-a-realistic-mode-of-travel" class="level1">
+<h1>Accounting for a realistic mode of travel</h1>
+<p>To estimate accessibility within a 15-minute walk of the potential supermarket sites, I assume that the average walking speed is <a href="https://tfl.gov.uk/corporate/transparency/freedom-of-information/foi-request-detail?referenceId=FOI-0318-2526" target="_blank">4 km per hour</a>. I use the walking network to estimate which streets are accessible within this amount of time, and then create a convex hull (a simple polygon) from those streets. The portion of each OA which falls within that polygon is then used to estimate the total population within a 15-minute radius.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></p>
+<div class="fig-narrow" style="--fig-width: 95%">
+<div id="fig-15-min-radius" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-15-min-radius-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="radius_15_min.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-15-min-radius-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: 15-minute walk populations.
+</figcaption>
+</figure>
+</div>
+</div>
+<p>In <a href="#fig-15-min-radius" class="quarto-xref">Figure&nbsp;2</a>, I estimate that 2,906 people would be within a 15-minute walk of a supermarket in E00011326, while 4,452 people would have 15-minute walking access to one in E00011710. This data highlights that, while the estimated flows to a supermarket in E00011326 were higher from the oroginal calibrated model, a supermarket within E00011710 would have a greater population within a more typical walking trip distance length. Given the fact that the trips data represents all trips, not just those to a supermarket, and that people are probably even more likely to value proximity for supermarkets than other retail activities, this data serves as additional evidence for E00011710 as the recommended supermarket location.</p>
 
 
 </section>
 
-</main> <!-- /main -->
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>Poisson distributions are a nice way to represent count data which are non-negative and often right-skewed.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Note that the balancing factors are actually defined by each other. Algorithmically, this means I run an iterative process where I set each factor to an initial value and stop once the values are stable.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>The way the data is constructed, this variable is actually the number of trips for all activities. I use it as a proxy for the number of supermarket trips.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>That is, if 50% of an OA is covered by the convex hull, I (perhaps crudely) estimate that 50% of its population falls within the 15-minute radius.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     // Ensure there is a toggle, if there isn't float one in the top right

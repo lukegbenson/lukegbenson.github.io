@@ -1,0 +1,56 @@
+/* Site-wide styles
+   Lives at the project root, next to _quarto.yml
+   Loaded via `css: styles.css` in _quarto.yml */
+
+:root {
+  /* Gap beneath every figure and table block */
+  --block-gap: 2rem;
+
+  /* Default width for figures marked .fig-narrow */
+  --fig-narrow-width: 80%;
+}
+
+
+/* Spacing beneath figures and tables */
+
+.quarto-float,
+.cell-output-display,
+figure,
+table.table {
+  margin-bottom: var(--block-gap);
+}
+
+/* Nested inside one of the above, which already supplied the gap */
+.quarto-float figure,
+.quarto-float table.table,
+.cell-output-display figure,
+.cell-output-display table.table,
+figure table.table {
+  margin-bottom: 0;
+}
+
+/* Captions live inside the block and never add to the gap below it */
+figcaption,
+table.table > caption {
+  margin-bottom: 0;
+}
+
+/* Unless the caption sits above its content, where it needs a little
+   separation from the thing it labels */
+figcaption.quarto-float-caption-top,
+table.table > caption {
+  margin-bottom: 0.5rem;
+}
+
+
+/* Narrowed figures */
+
+.fig-narrow figure {
+  width: var(--fig-width, var(--fig-narrow-width));
+  margin-inline: auto;
+}
+
+.fig-narrow figure img {
+  width: 100%;
+  height: auto;
+}

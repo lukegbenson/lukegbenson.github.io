@@ -84,6 +84,7 @@ ul.task-list li input[type="checkbox"] {
 }</script>
 
 
+<link rel="stylesheet" href="../../styles.css">
 </head>
 
 <body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
@@ -348,11 +349,6 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<style>
-figure figcaption {
-  margin-bottom: 2rem;
-}
-</style>
 <p><a href="https://github.com/lukegbenson/parking_lot_analysis" class="btn btn-outline-primary btn-sm"><i class="fa-brands fa-github" aria-label="github"></i> View code on GitHub</a></p>
 <section id="a-ridiculous-question" class="level1">
 <h1>A ridiculous question?</h1>
@@ -373,38 +369,46 @@ figure figcaption {
 <p>I construct the following variables.</p>
 <p><strong>Lot area percentage</strong>: <em>The percentage of the total area of the central city which is covered by parking lots.</em></p>
 <p>The leader in this category is San Bernardino, California, with more than 36.6% of its total space dedicated to surface and above ground parking.</p>
-<figure style="width: 80%; margin: auto;" class="figure">
-<img src="lots_san_bernardino.png" style="width: 100%;" class="figure-img">
-<figcaption>
-Parking lots in San Bernardino, California.
-</figcaption>
+<div class="fig-narrow" style="--fig-width: 80%">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="lots_san_bernardino.png" class="img-fluid figure-img"></p>
+<figcaption>Parking lots in San Bernardino, California.</figcaption>
 </figure>
+</div>
+</div>
 <p><strong>Average lot size</strong>: <em>The average size of a parking lot in the city.</em></p>
 <p>With massive lots across the central area, San Bernardino also tops all cities in this category at more than half a hectare per parking lot.</p>
 <p><strong>Gini coefficient</strong>: <em>A measure of the distribution inequality of parking lot sizes.</em></p>
 <p>Measured from 0 (equal) to 1 (unequal), this value captures how the total parking space is distributed across lots. Is the total parking area made up of several evenly-sized lots? One giant lot and a bunch of small ones?</p>
 <p>At 0.71, Long Beach, California has a high Gini coefficient: the lot area is distributed very unevenly across lots. There are a couple lots near the coast which take up a lot of space and then tons of small lots scattered throughout the rest of central city.</p>
-<figure style="width: 80%; margin: auto;" class="figure">
-<img src="lots_long_beach.png" style="width: 100%;" class="figure-img">
-<figcaption>
-Parking area is unevenly distributed among lots in Long Beach, Caifornia.
-</figcaption>
+<div class="fig-narrow" style="--fig-width: 80%">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="lots_long_beach.png" class="img-fluid figure-img"></p>
+<figcaption>Parking area is unevenly distributed among lots in Long Beach, Caifornia.</figcaption>
 </figure>
+</div>
+</div>
 <p>Compare that to Houston, Texas, where the Gini coefficient is just above 0.35 and the lots are roughly all the same size.</p>
-<figure style="width: 80%; margin: auto;" class="figure">
-<img src="lots_houston.png" style="width: 100%;" class="figure-img">
-<figcaption>
-Parking in Houston, Texas, is evenly distributed and ordered within the city grid.
-</figcaption>
+<div class="fig-narrow" style="--fig-width: 80%">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="lots_houston.png" class="img-fluid figure-img"></p>
+<figcaption>Parking in Houston, Texas, is evenly distributed and ordered within the city grid</figcaption>
 </figure>
+</div>
+</div>
 <p><strong>Orientation entropy</strong>: <em>A measure of the directional disorder of parking lot orientations.</em></p>
 <p>This metric is common in <a href="https://www.nature.com/articles/srep03324" target="_blank">street network analysis</a>, and is useful in analyzing the level of order or planning in the built environment. Take Houston again, for example. The lots are almost all aligned with the principal directions of a clear street grid, and so entropy is low. A rose diagram highlights the distribution of these lot directions.</p>
-<figure style="width: 80%; margin: auto;" class="figure">
-<img src="lots_rose_houston.png" style="width: 100%;" class="figure-img">
-<figcaption>
-The rose diagram reveals the high degree of directional order among parking lots in Houston.
-</figcaption>
+<div class="fig-narrow" style="--fig-width: 80%">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="lots_rose_houston.png" class="img-fluid figure-img"></p>
+<figcaption>The rose diagram reveals the high degree of directional order among parking lots in Houston.</figcaption>
 </figure>
+</div>
+</div>
 <p>Compare this to Houston’s fellow Texas city, San Antonio, which has one of the highest orientation entropies in the dataset: the street network molds and twists across overlapping sub-grids with lots taking on shapes that the streets afford them.</p>
 <div class="quarto-layout-panel" data-layout-ncol="2">
 <div class="quarto-layout-row">
@@ -417,7 +421,7 @@ The rose diagram reveals the high degree of directional order among parking lots
 </div>
 </div>
 <div class="figure-caption">
-<p>Parking lots in San Antonio are oriented in many directions, indicating high orientaiton entropy.</p>
+<p>Parking lots in San Antonio are oriented in many directions, indicating high orientation entropy.</p>
 </div>
 <p>Using our four parking lot variables, how accurately can we estimate car usage in the central area of the city? Which factors matter and which don’t?</p>
 </section>
@@ -428,12 +432,14 @@ The rose diagram reveals the high degree of directional order among parking lots
 <p>The purpose here is that I want to estimate a multifaceted, complex behavioral data point using this almost comically small amount of information. Appropriately, I keep the model simple as well: a linear regression using the four parking-lot variables above.</p>
 <p>And, surprisingly, it works pretty well.</p>
 <p><strong>More than 50% of the variation in car usage in city central areas can be explained by parking lots alone.</strong> If all we know about a central city area is the coordinates of its parking lots, we can do a pretty good job of estimating how frequently people who live there drive to work.</p>
-<figure style="width: 80%; margin: auto;" class="figure">
-<img src="lots_estimated_usage.png" style="width: 100%;" class="figure-img">
-<figcaption>
-Actual car usage vs.&nbsp;estimated car usage. Using just parking lot footprints, we can explain 50.4% of the variation in car usage.
-</figcaption>
+<div class="fig-narrow" style="--fig-width: 80%">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="lots_estimated_usage.png" class="img-fluid figure-img"></p>
+<figcaption>Actual car usage vs.&nbsp;estimated car usage. Using just parking lot footprints, we can explain 50.4% of the variation in car usage.</figcaption>
 </figure>
+</div>
+</div>
 <p>To be clear, this does not mean that parking lots are a magical crystal ball for transportation behavior. The model is deliberately simple, and these variables are almost surely standing in for a whole collection of other characteristics of the built environment.</p>
 <p>The actual model used to estimate car usage relies primarily on two factors: 1) the square root of lot area percentage, and 2) the average lot size. The Gini coefficient and orientation entropy, while interesting, are ultimately not useful in predicting car usage.</p>
 <div style="width: 80%; margin: auto;">
@@ -467,12 +473,14 @@ Actual car usage vs.&nbsp;estimated car usage. Using just parking lot footprints
 <p>Lot area percentage has a strong positive relationship with car usage: the more space dedicated to parking, the higher the percentage of trips involving a car. Intuitively, this makes sense. The presence of the square root of the variable indicates that the impact of lot area percentage on car usage actually diminishes as we increase lot area percentage: we’re going to see a larger spike in car usage going from 10% parking to 20% parking than from 20% to 30%.</p>
 <p>Average lot size has a smaller but still significant negative relationship with car usage, meaning that larger lot sizes actually correspond with a slight dip in car usage. Wouldn’t we expect larger lots to be associated with less walkable areas, more sprawl and, therefore, greater car usage?</p>
 <p>The important thing to note here is the model already accounts for the city’s total lot percentage: lot size is only associated with a dip in car usage when we’ve also considered total parking. The negative relationship makes sense when thinking about how average lot size interacts with lot density. Given two cities with the same total lot percentage, the city with the larger average lot size will (mathematically) have fewer lots per hectare. And it makes sense why a city with a few large lots might be less car dependent than the city with several smaller lots: the presence of many smaller lots implies a kind of ubiquity of car travel, while a few bigger lots may signify that the city is more of a park-then-walk destination for commuters living outside the central area.</p>
-<figure style="width: 80%; margin: auto;" class="figure">
-<img src="lots_size_density_footprint.png" style="width: 100%;" class="figure-img">
-<figcaption>
-Lot size, density, and total footprint. The total lot percentage is simply the product of average lot size and lot density. Cities may have the same parking footprint with high density and small lots or low density and large lots.
-</figcaption>
+<div class="fig-narrow" style="--fig-width: 80%">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="lots_size_density_footprint.png" class="img-fluid figure-img"></p>
+<figcaption>Lot size, density, and total footprint. The total lot percentage is simply the product of average lot size and lot density. Cities may have the same parking footprint with high density and small lots or low density and large lots.</figcaption>
 </figure>
+</div>
+</div>
 </section>
 <section id="moving-forward" class="level1">
 <h1>Moving forward</h1>
