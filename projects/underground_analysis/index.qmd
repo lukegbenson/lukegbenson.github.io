@@ -5,6 +5,8 @@ date: 2026-04-27
 image: node_removal.png
 ---
 
+[{{< fa brands github >}} View code on GitHub](https://github.com/lukegbenson/underground_network_analysis){.btn .btn-outline-primary .btn-sm}
+
 # Identifying important stations
 
 ## Centrality measures
