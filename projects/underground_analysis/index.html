@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2026-04-27">
+<meta name="description" content="An exercise in examining network vulnerability and rerouting under station closure.">
+
+<title>London Underground Network Analysis – Luke Benson</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../favicon.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-b85bc7c33db8c58e0ec93c3465666fed.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-445b8638c3d06994fee0907d791121c4.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-df07115ad9f15e2ef3479c789e6873c8.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-445b8638c3d06994fee0907d791121c4.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Luke Benson</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../projects/index.html"> 
+<span class="menu-text">Projects</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/lukegbenson"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/lukegbenson/"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="mailto:lukegbenson@gmail.com"> <i class="bi bi-envelope" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#identifying-important-stations" id="toc-identifying-important-stations" class="nav-link active" data-scroll-target="#identifying-important-stations">Identifying important stations</a>
+  <ul class="collapse">
+  <li><a href="#centrality-measures" id="toc-centrality-measures" class="nav-link" data-scroll-target="#centrality-measures">Centrality measures</a></li>
+  <li><a href="#which-measure-is-most-appropriate" id="toc-which-measure-is-most-appropriate" class="nav-link" data-scroll-target="#which-measure-is-most-appropriate">Which measure is most appropriate?</a></li>
+  </ul></li>
+  <li><a href="#leveling-up-with-passenger-flows" id="toc-leveling-up-with-passenger-flows" class="nav-link" data-scroll-target="#leveling-up-with-passenger-flows">Leveling up with passenger flows</a>
+  <ul class="collapse">
+  <li><a href="#which-station-is-the-most-important-now" id="toc-which-station-is-the-most-important-now" class="nav-link" data-scroll-target="#which-station-is-the-most-important-now">Which station is the most important now?</a></li>
+  <li><a href="#od-flows" id="toc-od-flows" class="nav-link" data-scroll-target="#od-flows">OD flows</a></li>
+  <li><a href="#what-if-waterloo-closed" id="toc-what-if-waterloo-closed" class="nav-link" data-scroll-target="#what-if-waterloo-closed">What if Waterloo closed?</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">London Underground Network Analysis</h1>
+</div>
+
+<div>
+  <div class="description">
+    An exercise in examining network vulnerability and rerouting under station closure.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">April 27, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="identifying-important-stations" class="level1">
+<h1>Identifying important stations</h1>
+<section id="centrality-measures" class="level2">
+<h2 class="anchored" data-anchor-id="centrality-measures">Centrality measures</h2>
+<p>The London Underground network can be first conceptualized as a graph in which each station is connected to its adjacent stations which are one stop away.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> Ignore the distance between stations or the number of people who actually use these connections for now. This is a simple <em>topological</em> network.</p>
+<p>The following centrality measures are useful for identifying the most important nodes in the network.</p>
+<p><strong>Degree Centrality</strong></p>
+<p>In an undirected graph, the degree of any node <span class="math inline">\(i\)</span>, denoted as <span class="math inline">\(k_i\)</span>, is the number of edges or links attached to it. The degree centrality of each node is simply the fraction of all other nodes to which it is connected:</p>
+<p><span class="math display">\[\begin{equation}
+    C(i) = \frac{k_i}{n - 1}
+\end{equation}\]</span></p>
+<p>In the context of the underground, this measure captures the fraction of all other stations to which each station is connected. The stations that rank highest in this metric allow passengers to reach the most stations directly within one stop, and so these stations probably serve as important transfer hubs. In <a href="#tbl-deg-cent" class="quarto-xref">Table&nbsp;1</a>, we see this to be the case: multi-line hubs like Stratford, Bank and Monument, and King’s Cross top the rankings.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
+<div id="tbl-deg-cent" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-deg-cent-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1: Top stations ranked by Degree Centrality
+</figcaption>
+<div aria-describedby="tbl-deg-cent-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: right;">Rank</th>
+<th>Station</th>
+<th style="text-align: right;">Degree Centrality</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td>Stratford</td>
+<td style="text-align: right;">0.0225</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td>Bank and Monument</td>
+<td style="text-align: right;">0.0200</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td>King’s Cross St.&nbsp;Pancras</td>
+<td style="text-align: right;">0.0175</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">3</td>
+<td>Baker Street</td>
+<td style="text-align: right;">0.0175</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5</td>
+<td>Waterloo</td>
+<td style="text-align: right;">0.0150</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5</td>
+<td>Liverpool Street</td>
+<td style="text-align: right;">0.0150</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5</td>
+<td>West Ham</td>
+<td style="text-align: right;">0.0150</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5</td>
+<td>Canning Town</td>
+<td style="text-align: right;">0.0150</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5</td>
+<td>Green Park</td>
+<td style="text-align: right;">0.0150</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5</td>
+<td>Earl’s Court</td>
+<td style="text-align: right;">0.0150</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5</td>
+<td>Oxford Circus</td>
+<td style="text-align: right;">0.0150</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<p><strong>Closeness Centrality</strong></p>
+<p>In a topological network, the shortest path between any two nodes in the network, also called the <em>geodesic</em>, is the path which requires the fewest number of edges to traverse from one node to the other. Closeness centrality is then defined by the inverse of a node’s mean geodesic distance to all other (reachable) nodes. For any two nodes <span class="math inline">\(i\)</span> and <span class="math inline">\(j\)</span>, I denote the geodesic distance as <span class="math inline">\(d_{ij}\)</span>, and define closeness centrality as:</p>
+<p><span class="math display">\[\begin{equation}
+    C(i) = \frac{n-1}{\sum_{j}^{n-1} d_{ij}}
+\end{equation}\]</span></p>
+<p>In the underground network, the top-ranked stations by closeness centrality are the stations which require, on average, the fewest number of stops to get to any other station. These stations are crucial because they are centrally-located hubs which minimize the number of stops and, consequently, time needed for passengers to get anywhere in the network. Green Park, Bank and Monument, and King’s Cross are all central stations with close proximity to most lines. These stations fittingly top the rankings in <a href="#tbl-close-cent" class="quarto-xref">Table&nbsp;2</a>.</p>
+<div id="tbl-close-cent" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-close-cent-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;2: Top stations ranked by Closeness Centrality”
+</figcaption>
+<div aria-describedby="tbl-close-cent-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: right;">Rank</th>
+<th>Station</th>
+<th style="text-align: right;">Closeness Centrality</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td>Green Park</td>
+<td style="text-align: right;">0.1148</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td>Bank and Monument</td>
+<td style="text-align: right;">0.1136</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td>King’s Cross St.&nbsp;Pancras</td>
+<td style="text-align: right;">0.1134</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4</td>
+<td>Westminster</td>
+<td style="text-align: right;">0.1125</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5</td>
+<td>Waterloo</td>
+<td style="text-align: right;">0.1123</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6</td>
+<td>Oxford Circus</td>
+<td style="text-align: right;">0.1112</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">7</td>
+<td>Bond Street</td>
+<td style="text-align: right;">0.1110</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">8</td>
+<td>Angel</td>
+<td style="text-align: right;">0.1107</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">8</td>
+<td>Farringdon</td>
+<td style="text-align: right;">0.1107</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">10</td>
+<td>Moorgate</td>
+<td style="text-align: right;">0.1103</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<p><strong>Betweenness Centrality</strong></p>
+<p>The betweenness centrality of a node is the share of geodesics between all nodes in the network which pass through that node. Denoting <span class="math inline">\(n^i_{st}\)</span> as a binary variable which is 1 if node <span class="math inline">\(i\)</span> is on the geodesic from node <span class="math inline">\(s\)</span> to node <span class="math inline">\(t\)</span> and 0 if not, and <span class="math inline">\(g_{st}\)</span> as the total number of geodesics from <span class="math inline">\(s\)</span> to <span class="math inline">\(t\)</span> (there can be multiple shortest paths), betweenness centrality is defined as:<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></p>
+<p><span class="math display">\[\begin{equation}
+    C(i) = \frac{2}{(n-1)(n-2)} \sum_{s,t} \frac{n^i_{st}}{g_{st}}
+\end{equation}\]</span></p>
+<p>The top-ranked stations by betweenness centrality are the stations which most often sit on the optimal route from one station to any other. These stations can, therefore, be thought of as critical bridges within the system which would cause the greatest amount rerouting if removed from the network.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a> <a href="#tbl-bet-cent" class="quarto-xref">Table&nbsp;3</a> highlights that Stratford, a critical bridge for eastern DLR stations, and Bank and Monument, a centrally-located multi-line station allowing connections across all directions, lead all stations in this measure.</p>
+<div id="tbl-bet-cent" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-bet-cent-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;3: Top stations ranked by Betweenness Centrality”
+</figcaption>
+<div aria-describedby="tbl-bet-cent-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: right;">Rank</th>
+<th>Station</th>
+<th style="text-align: right;">Betweenness Centrality</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td>Stratford</td>
+<td style="text-align: right;">0.2978</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td>Bank and Monument</td>
+<td style="text-align: right;">0.2905</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td>Liverpool Street</td>
+<td style="text-align: right;">0.2708</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4</td>
+<td>King’s Cross St.&nbsp;Pancras</td>
+<td style="text-align: right;">0.2553</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5</td>
+<td>Waterloo</td>
+<td style="text-align: right;">0.2439</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6</td>
+<td>Green Park</td>
+<td style="text-align: right;">0.2158</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">7</td>
+<td>Euston</td>
+<td style="text-align: right;">0.2083</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">8</td>
+<td>Westminster</td>
+<td style="text-align: right;">0.2033</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">9</td>
+<td>Baker Street</td>
+<td style="text-align: right;">0.1916</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">10</td>
+<td>Finchley Road</td>
+<td style="text-align: right;">0.1651</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+</section>
+<section id="which-measure-is-most-appropriate" class="level2">
+<h2 class="anchored" data-anchor-id="which-measure-is-most-appropriate">Which measure is most appropriate?</h2>
+<p>Removing nodes in order of their importance according to each centrality measure gives us some sense of how suitable that measure is for assessing network vulnerability. Each time I remove a node, the connected underground system is potentially separated into multiple disconnected components. The size of the remaining largest connected component (LCC) indicates the severity of the loss of connectivity. Removing a one-degree node at the end of a line, for example, will reduce the LCC size by one and leave most of the system functioning as usual. However, removing the only node that connects two components of the graph could sink the LCC size and leave passengers completely unable to travel to an entire half of the network. The centrality measure which displays the steepest dip in LCC size over several high-ranking node removals is the measure that probably best conveys which nodes are most important for network vulnerability.</p>
+<div id="fig-network-vulnerability" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-network-vulnerability-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="node_removal.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-network-vulnerability-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Network Vulnerability.
+</figcaption>
+</figure>
+</div>
+<p>For each centrality measure, I ranked all nodes, removed the highest ranking node, and then computed the LCC. I then ran this same process again, 15 times in total.</p>
+<p><a href="#fig-network-vulnerability" class="quarto-xref">Figure&nbsp;1</a> displays the results. While the three measures show comparable results for the first five removals, removing the highest-ranking betweenness centrality node leads to the steepest drop-off in LCC size at future removals. Betweenness centrality should, therefore, be considered most appropriate for capturing network vulnerability. The stations identified by betweenness centrality are not only critical bridge points for optimal travel paths but are also vital for ensuring passengers have access to greater portions of the underground network at large.</p>
+</section>
+</section>
+<section id="leveling-up-with-passenger-flows" class="level1">
+<h1>Leveling up with passenger flows</h1>
+<section id="which-station-is-the-most-important-now" class="level2">
+<h2 class="anchored" data-anchor-id="which-station-is-the-most-important-now">Which station is the most important now?</h2>
+<p>In a weighted network, each edge carries a value. Here, I define edge weight based on the number of commuter flows during the morning AM peak, i.e.&nbsp;the number of commuters whose route includes the edge between two stations. A greater number of flows between two stations signifies greater strength of connection between those stations: the more people who use the path, the more important it is to the network.</p>
+<p>Computing centrality measures on a weighted network requires slight modifications to those measures. For degree centrality, instead of using the number of connections (degree) of a node, I use the total weight of those connections. The node with the greatest total flows will rank highest in degree centrality.</p>
+<p>Closeness centrality and betweenness centrality both utilize the shortest paths between nodes. In a weighted network, the shortest path is no longer defined by the fewest number of hops needed to get from one node to the other, but by the path which minimizes the distance needed to get between those nodes. Given that adjacent nodes with greater flows between them are “closer” than adjacent nodes with fewer flows, I compute the geodesic distances between nodes in the network by using the paths which minimize the aggregated <em>inverse</em> flows between nodes.</p>
+<div id="tbl-important-stations" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-important-stations-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;4: Top station in a network weighted by flows”
+</figcaption>
+<div aria-describedby="tbl-important-stations-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Measure</th>
+<th>Most Important Station</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Degree Centrality</td>
+<td>Bank and Monument</td>
+</tr>
+<tr class="even">
+<td>Closeness Centrality</td>
+<td>Green Park</td>
+</tr>
+<tr class="odd">
+<td>Betweenness Centrality</td>
+<td>Green Park</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<p>With the flows-weighted network, it may also be important to consider eigenvector centrality. For a given station, eigenvector centrality considers the importance or centrality of stations connected to it. In the underground network, this measure would help identify stations which are connected to other high-flow stations along high-volume routes.</p>
+<p>Mathematically, eigenvector centrality uses the network adjacency matrix, <span class="math inline">\(A_{ij}\)</span>, and the largest eigenvalue of the matrix, <span class="math inline">\(\lambda\)</span>, to recursively update the centrality score of a node based on the centrality scores of its neighbors:</p>
+<p><span class="math display">\[\begin{equation}
+    C(i) = \frac{1}{\lambda} \sum_{j=1}^{n-1} A_{ij} C(j)
+\end{equation}\]</span></p>
+<p><a href="#tbl-eigen" class="quarto-xref">Table&nbsp;5</a> shows the top stations by this measure, and, as expected, centrally-located stations within high frequency corridors top the list: Waterloo, Bank and Monument, and Westminster.</p>
+<div id="tbl-eigen" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-eigen-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;5: Top stations ranked by weighted Eigenvector Centrality”
+</figcaption>
+<div aria-describedby="tbl-eigen-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: right;">Rank</th>
+<th>Station</th>
+<th style="text-align: right;">Eigenvector Centrality</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td>Waterloo</td>
+<td style="text-align: right;">0.5420</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td>Bank and Monument</td>
+<td style="text-align: right;">0.4911</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td>Westminster</td>
+<td style="text-align: right;">0.4238</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4</td>
+<td>Green Park</td>
+<td style="text-align: right;">0.2969</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5</td>
+<td>Liverpool Street</td>
+<td style="text-align: right;">0.2621</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6</td>
+<td>Moorgate</td>
+<td style="text-align: right;">0.1448</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">7</td>
+<td>Stratford</td>
+<td style="text-align: right;">0.1200</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">8</td>
+<td>London Bridge</td>
+<td style="text-align: right;">0.1192</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">9</td>
+<td>Victoria</td>
+<td style="text-align: right;">0.1190</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">10</td>
+<td>Oxford Circus</td>
+<td style="text-align: right;">0.1185</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+</section>
+<section id="od-flows" class="level2">
+<h2 class="anchored" data-anchor-id="od-flows">OD flows</h2>
+<p>I now examine the original origin-destination (OD) flows matrix which was used to construct the weighted graph. The matrix gives me some level of greater granularity here, including estimates for the number of passengers during the AM peak whose journeys begin and end at every possible pair of stations.</p>
+<p>The OD flow with the largest AM peak flows is Waterloo to Bank and Monument, with 15,946 flows. However, far more people would be impacted by a closure to Waterloo station. 67,372 passengers who start their journey at Waterloo would be disrupted and 23,408 who end their journey at the station would have to reroute. An additional 118,483 passengers travel through the station based on estimated shortest-length paths, meaning that <span class="math inline">\(209,263\)</span> morning commuters in total would be affected if trains were unable to pass through Waterloo.</p>
+</section>
+<section id="what-if-waterloo-closed" class="level2">
+<h2 class="anchored" data-anchor-id="what-if-waterloo-closed">What if Waterloo closed?</h2>
+<p>The most popular journey is Waterloo to Bank and Monument. If Waterloo is closed, to which station should passengers walk in order to get to Bank and Monument?</p>
+<p>Based on data provided by TfL, I assume the average walking speed is <a href="https://tfl.gov.uk/corporate/transparency/freedom-of-information/foi-request-detail?referenceId=FOI-0318-2526" target="_blank">4 km per hour</a>, and the speed during train disruption is <a href="https://tfl.gov.uk/corporate/transparency/freedom-of-information/foi-request-detail?referenceId=FOI-0126-2223" target="_blank">24.1 km per hour</a>.<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a> Based on these parameters, I can compute the optimal path from Waterloo to Bank and Monument, i.e.&nbsp;the path which would take the shortest amount of time, during station closure.</p>
+<div id="fig-optimal-route" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-optimal-route-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="optimal_route.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-optimal-route-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Optimal path under Waterloo closure.
+</figcaption>
+</figure>
+</div>
+<p>With these parameters, the optimal route in <a href="#fig-optimal-route" class="quarto-xref">Figure&nbsp;2</a> is for passengers to walk 13.1 minutes to Southwark, take the Jubilee line to London Bridge, and then transfer to the Northern line to get to Bank and Monument. The total trip time estimate is 18 minutes.</p>
+<p>There are a couple key assumptions in this analysis. First, I do not account for the fact that transfers between lines take time; this would add to the total trip time. Second, to simplify the problem, I assume that all passengers start at the exact geographic coordinates Waterloo station. In the real world, while some passengers may instinctively head to the station to find that it is closed, others may see ahead of time that the station is closed and come up with an alternative route from their home or starting location.</p>
+
+
+</section>
+</section>
+
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>The entire network includes London Underground and London Overground lines. Given that many overground lines integrate well with the underground network, all London Overground nodes and edges were included in my analysis. Throughout this writing, “underground” is mentioned colloquially in reference to the entire network of all these stations.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>It is important to note that lines which run the same path from one station to the next are represented by only a single edge in this network. At King’s Cross, for example, there is only one edge representing the shared paths of the Circle, Metropolitan, and Hammersmith &amp; City lines.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>The presented equation also scales by the inverse of the number of possible <span class="math inline">\(s,t\)</span> pairs, which is <span class="math inline">\(\binom{n-1}{2}\)</span>.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>I should caveat that “greatest amount of rerouting”, here, does not consider actual transport flows.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>The TfL mentions that trains go as slow as 15 mph, which is roughly 24.1 km/h. If a station were closed, I assume trains would generally travel at this slower speed.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/lukegbenson\.github\.io\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
